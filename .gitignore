@@ -1,0 +1,5 @@
+dist/
+
+# IDEs and Editors
+.vscode/
+.continue/

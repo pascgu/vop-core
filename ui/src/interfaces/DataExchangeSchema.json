@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DataExchangeSchema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the data exchange"
+    },
+    "type": {
+      "type": "string",
+      "description": "Type of data being exchanged",
+      "enum": ["code", "data"]
+    },
+    "content": {
+      "type": "object",
+      "description": "Content of the data exchange",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Code to be sent to the device"
+        },
+        "data": {
+          "type": "object",
+          "description": "Data received from the device"
+        }
+      },
+      "required": ["code", "data"]
+    }
+  },
+  "required": ["id", "type", "content"]
+}
