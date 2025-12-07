@@ -1,0 +1,1 @@
+- In the latest versions of MicroPython, the REPL can be launched by default in WiFi mode (info from Seb). This needs to be investigated.
