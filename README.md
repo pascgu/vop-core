@@ -5,7 +5,7 @@ The core frontend and shared tools for **VoP (Visual Object Programming)**. This
 - Shared utilities (JSON schemas, validation, etc.).
 
 ## Features
-✅ **Lightweight editor** with compact nodes (like n8n/LabView).
+✅ **Lightweight editor** with compact nodes.
 ✅ **Reusable frontend** for VSCode, Android, and Desktop apps.
 ✅ **Standardized JSON schema** for workflows.
 
