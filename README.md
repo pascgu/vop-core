@@ -16,22 +16,24 @@ The core frontend and shared tools for **VoP (Visual Object Programming)**. This
 - **First time setup:** Run `npm install` in the `ui/` directory to install dependencies.
 - **Start the development server:** `npm start`
 - **Build the project:** `npm run build`
-- **Preview the build:** `npm run preview`
-- **Output:** The build output is generated in `../dist/web-assets` after running `npm run build`.
+- **Output:** The build output is generated in `../dist/ui` after running `npm run build`.
 
 ## Vite Configuration
-- **Vite** is configured to output the build to `../dist/web-assets`.
+- **Vite** is configured to output the build to `../dist/ui`.
 
 ### Commands
-- **Start the development server:**
+- **Start the development server (once):**
+  
+  In another shell (keep it running).
   ```bash
+  cd ui
   npm start
   ```
+
+  open in a browser the displayed url, like: http://localhost:5173
+
 - **Build the project:**
+  In a shell in the **ui/** directory, run:
   ```bash
   npm run build
-  ```
-- **Preview the build:**
-  ```bash
-  npm run preview
   ```
