@@ -25,7 +25,7 @@
 - **Technologies**: React (ReactFlow) for the frontend, MAUI (with HybridWebView) for the application, C# for the backend.
 - **Steps**:
   1. **Develop the MAUI application**:
-     - Create new MAUI project (VS2022 with .Net 9).
+     - Create new MAUI project (VS2022 or vscode with .Net 9).
      - Integrate the ReactFlow frontend into a HybridWebView.
      - Develop the C# backend to convert JSON into MicroPython code.
      - Use a USB OTG library to send code to the Pico.
@@ -89,7 +89,7 @@
 - **Technologies**: React (ReactFlow) for the frontend, MAUI + HybridWebView for the application, C# for the backend.
 - **Steps**:
   1. **Develop the MAUI application**:
-     - Create new MAUI project (VS2022 with .Net 9).
+     - Create new MAUI project (VS2022 or vscode with .Net 9).
      - Integrate the ReactFlow frontend into a HybridWebView.
      - Develop the C# backend to use platform-specific features (GPS, accelerometer, etc.).
   2. **Adapt for each platform**:
