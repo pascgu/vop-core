@@ -68,7 +68,7 @@ The proposed overall architecture is a "Core Web + Native Wrappers" architecture
 | **Multithreading** | Exploit native parallelism for independent paths. For **MicroPython**, allow explicit management of the second core. |
 | **VSCode Add-on** | Priority to VSCode for its popularity and modularity. Visual Studio will follow. |
 | **Widgets and UI** | Inspired by LabView, but with a modular and extensible approach. |
-| **DrawnUI (SkiaSharp)** | *Native Option (Historical)*: Open-source library (MIT) for creating vector and interactive interfaces in C#. Ideal for flow diagrams and real-time animations (60 FPS). |
+| **DrawnUI (SkiaSharp)** | *Native Option (Historical, set aside in favor of HybridWebView)*: Open-source library (MIT) for creating vector and interactive interfaces in C#. Ideal for flow diagrams and real-time animations (60 FPS). |
 | **LiveCharts2** | Open-source library (MIT) for dynamic charts, compatible with SkiaSharp for optimal performance. |
 | **Flutter** | Open-source framework (Google) for fluid (60-120 FPS) and lightweight (~50-100 Mo RAM) interfaces. Ideal for complex animations and cross-platform mobile development. |
 | **Pure MAUI** | Native C# integration without WebView. Better performance (~60 FPS) and memory (~50-80 Mo). |
