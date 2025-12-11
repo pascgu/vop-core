@@ -12,19 +12,20 @@
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "eslint-config-react-app": "^7.0.1",
+    "nth-check": "^2.1.1",
+    "postcss": "^8.5.6",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
-    "react-scripts": "^5.0.1",
     "reactflow": "^11.11.4",
     "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "webpack-dev-server": "^5.2.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "build:static": "npx react-scripts build && mkdir -p ../dist/web-assets && cp -r build/* ../dist/web-assets"
+    "start": "vite",
+    "build": "vite build",
+    "test": "vite test",
+    "eject": "vite eject"
   },
   "eslintConfig": {
     "extends": [
@@ -43,5 +44,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.1.2",
+    "vite": "^7.2.7"
   }
 }
