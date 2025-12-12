@@ -1,3 +1,5 @@
+import { Workflow } from '../interfaces/WorkflowTypes';
+
 /**
  * IVopHost Interface
  *
@@ -19,5 +21,41 @@ export interface IVopHost {
    */
   receiveDataFromDevice(data: any): void;
 
-  // Add other necessary methods here
+  /**
+   * Loads a workflow from data.
+   *
+   * @param workflowData - The workflow data to load.
+   */
+  loadWorkflow(workflowData: Workflow): void;
+
+  /**
+   * Saves the current workflow.
+   */
+  saveWorkflow(): void;
+
+  /**
+   * Executes the current workflow.
+   */
+  executeWorkflow(): void;
+
+  /**
+   * Handles node execution start event.
+   *
+   * @param nodeId - The ID of the node that started execution.
+   */
+  onNodeExecutionStart(nodeId: string): void;
+
+  /**
+   * Handles node execution end event.
+   *
+   * @param nodeId - The ID of the node that ended execution.
+   */
+  onNodeExecutionEnd(nodeId: string): void;
+
+  /**
+   * Handles errors during workflow execution.
+   *
+   * @param error - The error that occurred.
+   */
+  onWorkflowExecutionError(error: any): void;
 }

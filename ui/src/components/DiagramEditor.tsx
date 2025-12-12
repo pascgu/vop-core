@@ -1,23 +1,81 @@
-import React, { useCallback } from 'react';
-import ReactFlow, { ReactFlowProvider, Background, Controls, addEdge, Connection, Edge, useNodesState, useEdgesState, OnNodesChange, OnEdgesChange } from 'reactflow';
-import { Node } from 'reactflow';
+import React, { useCallback, useState, useEffect } from 'react';
+import ReactFlow, {
+  ReactFlowProvider,
+  Background,
+  Controls,
+  addEdge,
+  Connection,
+  Edge,
+  useNodesState,
+  useEdgesState,
+  OnNodesChange,
+  OnEdgesChange,
+  Node
+} from 'reactflow';
 import 'reactflow/dist/style.css';
+import { Workflow, WorkflowNode, WorkflowEdge } from '../interfaces/WorkflowTypes';
+import demoWorkflow from '../interfaces/DemoWorkflow.json';
 
-const initialNodes: Node[] = [
-  { id: '1', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
-  { id: '2', data: { label: 'Node 2' }, position: { x: 100, y: 100 } }
-];
-const initialEdges: Edge[] = [
-  { id: 'e1-2', source: '1', target: '2', animated: true, type: 'step', label: 'connects with' }
-];
+interface DiagramEditorProps {
+  showDemoWorkflow?: boolean;
+}
 
-const DiagramEditor: React.FC = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true }) => {
+  const [nodes, setNodes, onNodesChange] = useNodesState<WorkflowNode>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<WorkflowEdge>([]);
+
+  const [workflow, setWorkflow] = useState<Workflow>({
+    version: '1.0',
+    name: '',
+    nodes: [],
+    edges: [],
+    metadata: {
+      author: '',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
+  });
+
+  useEffect(() => {
+    if (showDemoWorkflow) {
+      setNodes(demoWorkflow.nodes as unknown as WorkflowNode[]);
+      setEdges(demoWorkflow.edges as unknown as WorkflowEdge[]);
+      setWorkflow(demoWorkflow as unknown as Workflow);
+    }
+  }, [showDemoWorkflow, setNodes, setEdges]);
+
+  const saveWorkflow = () => {
+    const workflowData: Workflow = {
+      version: workflow.version,
+      name: workflow.name,
+      nodes: nodes as WorkflowNode[],
+      edges: edges as WorkflowEdge[],
+      metadata: workflow.metadata
+    };
+    console.log('Workflow saved:', workflowData);
+  };
 
   const onConnect = useCallback(
-    (params: Edge | Connection) => setEdges((eds) => addEdge(params, eds)),
+    (params: Edge | Connection) => {
+      setEdges((eds) => {
+        const updatedEdges = addEdge(params, eds);
+        return updatedEdges.map(edge => ({
+          ...edge,
+          metadata: (edge as WorkflowEdge).metadata || {}
+        })) as WorkflowEdge[];
+      });
+
+      setWorkflow((prevWorkflow: Workflow) => {
+        const updatedEdges = addEdge(params, prevWorkflow.edges);
+        return {
+          ...prevWorkflow,
+          edges: updatedEdges.map(edge => ({
+            ...edge,
+            metadata: (edge as WorkflowEdge).metadata || {}
+          })) as WorkflowEdge[]
+        };
+      });
+    },
     [setEdges]
   );
 
@@ -29,12 +87,18 @@ const DiagramEditor: React.FC = () => {
           edges={edges}
           onNodesChange={onNodesChange as OnNodesChange}
           onEdgesChange={onEdgesChange as OnEdgesChange}
-          fitView // Center the diagram
+          fitView
           onConnect={onConnect}
-          deleteKeyCode={['Delete', 'Backspace']} /* 'delete'-key */
-          >
+          deleteKeyCode={['Delete', 'Backspace']}
+        >
           <Background />
           <Controls />
+          <button
+            onClick={saveWorkflow}
+            style={{ position: 'absolute', top: 10, right: 10, zIndex: 100 }}
+          >
+            Save Workflow
+          </button>
         </ReactFlow>
       </ReactFlowProvider>
     </div>

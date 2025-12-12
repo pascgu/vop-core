@@ -1,0 +1,36 @@
+{
+  "version": "1.0",
+  "name": "Demo Workflow",
+  "nodes": [
+    {
+      "id": "node-1",
+      "type": "input",
+      "position": { "x": 250, "y": 5 },
+      "data": { "label": "Node 1" },
+      "properties": {}
+    },
+    {
+      "id": "node-2",
+      "type": "output",
+      "position": { "x": 100, "y": 100 },
+      "data": { "label": "Node 2" },
+      "properties": {}
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-1",
+      "source": "node-1",
+      "target": "node-2",
+      "animated": true,
+      "type": "step",
+      "label": "connects with",
+      "metadata": {}
+    }
+  ],
+  "metadata": {
+    "author": "Demo",
+    "createdAt": "2023-10-01T00:00:00Z",
+    "updatedAt": "2023-10-01T00:00:00Z"
+  }
+}

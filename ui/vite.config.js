@@ -10,7 +10,7 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'index.html') // Specify the build entry (in src)
+        main: resolve(__dirname, 'index.html') // Specify the build entry point
       }
     }
   },
