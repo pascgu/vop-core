@@ -15,14 +15,14 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import { Workflow, WorkflowNode, WorkflowEdge } from '../interfaces/WorkflowTypes';
 import demoWorkflow from '../interfaces/DemoWorkflow.json';
-import JsCsBridge from '../utils/JsCsBridge';
 import { IVopHost } from '../interfaces/IVopHost';
 
 interface DiagramEditorProps {
   showDemoWorkflow?: boolean;
+  vopHost: IVopHost;
 }
 
-const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true }) => {
+const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true, vopHost }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<WorkflowNode>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<WorkflowEdge>([]);
 
@@ -55,30 +55,89 @@ const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true }
       metadata: workflow.metadata
     };
     console.log('Workflow:', workflowData);
-    const bridge = JsCsBridge.getInstance();
     try {
-      await bridge.invokeMethodAsync('VopPico.App', 'SaveWorkflow');
+      await vopHost.saveWorkflow();
       console.log('Workflow saved successfully.');
     } catch (error) {
       console.error('Error saving workflow:', error);
     }
   };
 
-  const testSendCode = async () => {
-    const bridge = JsCsBridge.getInstance();
+  const sendCodeToDevice = async () => {
     try {
-      await bridge.invokeMethodAsync('VopPico.App', 'SendCodeToDevice', 'console.log("Hello, world!");');
+      await vopHost.sendCodeToDevice('console.log("Hello, world!");');
       console.log('Code sent to device successfully.');
     } catch (error) {
       console.error('Error sending code to device:', error);
     }
   };
 
-  const testGetDeviceStatus = async () => {
-    const bridge = JsCsBridge.getInstance();
+  const receiveDataFromDevice = async () => {
     try {
-      console.log('Getting device status...')
-      const status = await bridge.invokeMethodAsync('VopPico.App', 'GetDeviceStatus');
+      await vopHost.receiveDataFromDevice({ message: 'Device is ready' });
+      console.log('Data received from device successfully.');
+    } catch (error) {
+      console.error('Error receiving data from device:', error);
+    }
+  };
+
+  const loadWorkflow = async () => {
+    try {
+      await vopHost.loadWorkflow({ /* workflow data */ });
+      console.log('Workflow loaded successfully.');
+    } catch (error) {
+      console.error('Error loading workflow:', error);
+    }
+  };
+
+  const executeWorkflow = async () => {
+    try {
+      await vopHost.executeWorkflow();
+      console.log('Workflow executed successfully.');
+    } catch (error) {
+      console.error('Error executing workflow:', error);
+    }
+  };
+
+  const onNodeExecutionStart = async () => {
+    try {
+      await vopHost.onNodeExecutionStart('nodeId');
+      console.log('Node execution start handled successfully.');
+    } catch (error) {
+      console.error('Error handling node execution start:', error);
+    }
+  };
+
+  const onNodeExecutionEnd = async () => {
+    try {
+      await vopHost.onNodeExecutionEnd('nodeId');
+      console.log('Node execution end handled successfully.');
+    } catch (error) {
+      console.error('Error handling node execution end:', error);
+    }
+  };
+
+  const onWorkflowExecutionError = async () => {
+    try {
+      await vopHost.onWorkflowExecutionError({ message: 'Error occurred' });
+      console.log('Workflow execution error handled successfully.');
+    } catch (error) {
+      console.error('Error handling workflow execution error:', error);
+    }
+  };
+
+  const onRawMessageReceived = async () => {
+    try {
+      await vopHost.onRawMessageReceived('Raw message received');
+      console.log('Raw message received handled successfully.');
+    } catch (error) {
+      console.error('Error handling raw message received:', error);
+    }
+  };
+
+  const getDeviceStatus = async () => {
+    try {
+      const status = await vopHost.getDeviceStatus();
       console.log('Device status:', status);
     } catch (error) {
       console.error('Error getting device status:', error);
@@ -123,24 +182,38 @@ const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true }
         >
           <Background />
           <Controls />
-          <button
-            onClick={saveWorkflow}
-            style={{ position: 'absolute', top: 10, right: 10, zIndex: 100 }}
-          >
-            Save Workflow
-          </button>
-          <button
-            onClick={testSendCode}
-            style={{ position: 'absolute', top: 10, right: 120, zIndex: 100 }}
-          >
-            Test Send Code
-          </button>
-          <button
-            onClick={testGetDeviceStatus}
-            style={{ position: 'absolute', top: 10, right: 240, zIndex: 100 }}
-          >
-            Test Get Device Status
-          </button>
+          <div style={{ position: 'absolute', left: 10, top: 10, zIndex: 100, display: 'flex', flexDirection: 'column' }}>
+            <button onClick={saveWorkflow}>
+              Save Workflow
+            </button>
+            <button onClick={sendCodeToDevice}>
+              Send Code to Device
+            </button>
+            <button onClick={receiveDataFromDevice}>
+              Receive Data from Device
+            </button>
+            <button onClick={loadWorkflow}>
+              Load Workflow
+            </button>
+            <button onClick={executeWorkflow}>
+              Execute Workflow
+            </button>
+            <button onClick={onNodeExecutionStart}>
+              Node Execution Start
+            </button>
+            <button onClick={onNodeExecutionEnd}>
+              Node Execution End
+            </button>
+            <button onClick={onWorkflowExecutionError}>
+              Workflow Execution Error
+            </button>
+            <button onClick={onRawMessageReceived}>
+              Raw Message Received
+            </button>
+            <button onClick={getDeviceStatus}>
+              Get Device Status
+            </button>
+          </div>
         </ReactFlow>
       </ReactFlowProvider>
     </div>

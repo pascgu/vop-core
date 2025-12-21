@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { resolve } from 'path'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [react()],
@@ -10,13 +10,15 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'index.html') // Specify the build entry point
-      }
-    }
+        pico: resolve(__dirname, 'index-pico.html'),
+        vscode: resolve(__dirname, 'index-vscode.html'),
+        main: resolve(__dirname, 'index.html'),
+      },
+    },
   },
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src')
-    }
-  }
-})
+      '@': resolve(__dirname, 'src'),
+    },
+  },
+});
