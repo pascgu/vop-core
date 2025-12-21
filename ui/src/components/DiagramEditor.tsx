@@ -15,6 +15,8 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import { Workflow, WorkflowNode, WorkflowEdge } from '../interfaces/WorkflowTypes';
 import demoWorkflow from '../interfaces/DemoWorkflow.json';
+import JsCsBridge from '../utils/JsCsBridge';
+import { IVopHost } from '../interfaces/IVopHost';
 
 interface DiagramEditorProps {
   showDemoWorkflow?: boolean;
@@ -44,7 +46,7 @@ const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true }
     }
   }, [showDemoWorkflow, setNodes, setEdges]);
 
-  const saveWorkflow = () => {
+  const saveWorkflow = async () => {
     const workflowData: Workflow = {
       version: workflow.version,
       name: workflow.name,
@@ -52,7 +54,35 @@ const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true }
       edges: edges as WorkflowEdge[],
       metadata: workflow.metadata
     };
-    console.log('Workflow saved:', workflowData);
+    console.log('Workflow:', workflowData);
+    const bridge = JsCsBridge.getInstance();
+    try {
+      await bridge.invokeMethodAsync('VopPico.App', 'SaveWorkflow');
+      console.log('Workflow saved successfully.');
+    } catch (error) {
+      console.error('Error saving workflow:', error);
+    }
+  };
+
+  const testSendCode = async () => {
+    const bridge = JsCsBridge.getInstance();
+    try {
+      await bridge.invokeMethodAsync('VopPico.App', 'SendCodeToDevice', 'console.log("Hello, world!");');
+      console.log('Code sent to device successfully.');
+    } catch (error) {
+      console.error('Error sending code to device:', error);
+    }
+  };
+
+  const testGetDeviceStatus = async () => {
+    const bridge = JsCsBridge.getInstance();
+    try {
+      console.log('Getting device status...')
+      const status = await bridge.invokeMethodAsync('VopPico.App', 'GetDeviceStatus');
+      console.log('Device status:', status);
+    } catch (error) {
+      console.error('Error getting device status:', error);
+    }
   };
 
   const onConnect = useCallback(
@@ -98,6 +128,18 @@ const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true }
             style={{ position: 'absolute', top: 10, right: 10, zIndex: 100 }}
           >
             Save Workflow
+          </button>
+          <button
+            onClick={testSendCode}
+            style={{ position: 'absolute', top: 10, right: 120, zIndex: 100 }}
+          >
+            Test Send Code
+          </button>
+          <button
+            onClick={testGetDeviceStatus}
+            style={{ position: 'absolute', top: 10, right: 240, zIndex: 100 }}
+          >
+            Test Get Device Status
           </button>
         </ReactFlow>
       </ReactFlowProvider>
