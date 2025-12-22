@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 import ReactFlow, {
   ReactFlowProvider,
   Background,
@@ -22,10 +22,33 @@ interface DiagramEditorProps {
   vopHost: IVopHost;
 }
 
+
+const logMessage = (message: string, type?: 'error' | 'warning') => {
+  if (type === 'error') {
+    console.error(message);
+  } else if (type === 'warning') {
+    console.warn(message);
+  } else {
+    console.log(message);
+  }
+
+  const logDiv = document.getElementById('logDiv');
+  if (logDiv) {
+    const newLog = document.createElement('div');
+    newLog.textContent = message;
+    if (type === 'error') {
+      newLog.style.color = 'red';
+    } else if (type === 'warning') {
+      newLog.style.color = 'orange';
+    }
+    logDiv.insertBefore(newLog, logDiv.firstChild);
+  }
+};
+
+
 const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true, vopHost }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<WorkflowNode>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<WorkflowEdge>([]);
-
   const [workflow, setWorkflow] = useState<Workflow>({
     version: '1.0',
     name: '',
@@ -37,6 +60,7 @@ const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true, 
       updatedAt: new Date().toISOString()
     }
   });
+  const logRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (showDemoWorkflow) {
@@ -63,24 +87,6 @@ const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true, 
     }
   };
 
-  const sendCodeToDevice = async () => {
-    try {
-      await vopHost.sendCodeToDevice('console.log("Hello, world!");');
-      console.log('Code sent to device successfully.');
-    } catch (error) {
-      console.error('Error sending code to device:', error);
-    }
-  };
-
-  const receiveDataFromDevice = async () => {
-    try {
-      await vopHost.receiveDataFromDevice({ message: 'Device is ready' });
-      console.log('Data received from device successfully.');
-    } catch (error) {
-      console.error('Error receiving data from device:', error);
-    }
-  };
-
   const loadWorkflow = async () => {
     try {
       await vopHost.loadWorkflow({ /* workflow data */ });
@@ -99,46 +105,11 @@ const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true, 
     }
   };
 
-  const onNodeExecutionStart = async () => {
-    try {
-      await vopHost.onNodeExecutionStart('nodeId');
-      console.log('Node execution start handled successfully.');
-    } catch (error) {
-      console.error('Error handling node execution start:', error);
-    }
-  };
-
-  const onNodeExecutionEnd = async () => {
-    try {
-      await vopHost.onNodeExecutionEnd('nodeId');
-      console.log('Node execution end handled successfully.');
-    } catch (error) {
-      console.error('Error handling node execution end:', error);
-    }
-  };
-
-  const onWorkflowExecutionError = async () => {
-    try {
-      await vopHost.onWorkflowExecutionError({ message: 'Error occurred' });
-      console.log('Workflow execution error handled successfully.');
-    } catch (error) {
-      console.error('Error handling workflow execution error:', error);
-    }
-  };
-
-  const onRawMessageReceived = async () => {
-    try {
-      await vopHost.onRawMessageReceived('Raw message received');
-      console.log('Raw message received handled successfully.');
-    } catch (error) {
-      console.error('Error handling raw message received:', error);
-    }
-  };
-
   const getDeviceStatus = async () => {
     try {
       const status = await vopHost.getDeviceStatus();
       console.log('Device status:', status);
+      logMessage(`Device status: ${status}`);
     } catch (error) {
       console.error('Error getting device status:', error);
     }
@@ -183,36 +154,33 @@ const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true, 
           <Background />
           <Controls />
           <div style={{ position: 'absolute', left: 10, top: 10, zIndex: 100, display: 'flex', flexDirection: 'column' }}>
-            <button onClick={saveWorkflow}>
-              Save Workflow
-            </button>
-            <button onClick={sendCodeToDevice}>
-              Send Code to Device
-            </button>
-            <button onClick={receiveDataFromDevice}>
-              Receive Data from Device
-            </button>
             <button onClick={loadWorkflow}>
               Load Workflow
             </button>
+            <button onClick={saveWorkflow}>
+              Save Workflow
+            </button>
             <button onClick={executeWorkflow}>
-              Execute Workflow
-            </button>
-            <button onClick={onNodeExecutionStart}>
-              Node Execution Start
-            </button>
-            <button onClick={onNodeExecutionEnd}>
-              Node Execution End
-            </button>
-            <button onClick={onWorkflowExecutionError}>
-              Workflow Execution Error
-            </button>
-            <button onClick={onRawMessageReceived}>
-              Raw Message Received
+              <b>&gt;</b> Execute Workflow
             </button>
             <button onClick={getDeviceStatus}>
               Get Device Status
             </button>
+            <div
+              id="logDiv"
+              ref={logRef}
+              style={{
+                width: '150px',
+                height: '400px',
+                overflowY: 'auto',
+                padding: '10px',
+                border: '1px solid #ccc',
+                fontSize: '10px',
+                marginTop: '10px',
+                wordWrap: 'break-word'
+              }}
+            >
+            </div>
           </div>
         </ReactFlow>
       </ReactFlowProvider>
@@ -221,3 +189,4 @@ const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true, 
 };
 
 export default DiagramEditor;
+export { logMessage };

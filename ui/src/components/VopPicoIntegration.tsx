@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { IVopHost } from '../interfaces/IVopHost';
-import DiagramEditor from './DiagramEditor';
+import DiagramEditor, { logMessage } from './DiagramEditor';
 import JsCsBridge from '../utils/JsCsBridge';
 import BridgeConfig from '../utils/BridgeConfig';
 
@@ -15,23 +15,14 @@ const VopPicoIntegration: React.FC = () => {
         if (assemblyName) {
           await bridge.invokeMethodAsync(assemblyName, 'SendCodeToDevice', code);
         } else {
-          console.error('Assembly name not found for SendCodeToDevice');
+          logMessage('Assembly name not found for SendCodeToDevice', 'error');
         }
       } catch (error) {
-        console.error('Error sending code to device:', error);
+        logMessage('Error sending code to device: ' + error, 'error');
       }
     },
     receiveDataFromDevice: async (data: any) => {
-      try {
-        const assemblyName = config.getAssemblyName('ReceiveDataFromDevice');
-        if (assemblyName) {
-          await bridge.invokeMethodAsync(assemblyName, 'ReceiveDataFromDevice', data);
-        } else {
-          console.error('Assembly name not found for ReceiveDataFromDevice');
-        }
-      } catch (error) {
-        console.error('Error receiving data from device:', error);
-      }
+      logMessage(`Data received from device: ${JSON.stringify(data)}`);
     },
     loadWorkflow: async (workflowData: any) => {
       try {
@@ -39,10 +30,10 @@ const VopPicoIntegration: React.FC = () => {
         if (assemblyName) {
           await bridge.invokeMethodAsync(assemblyName, 'LoadWorkflow', workflowData);
         } else {
-          console.error('Assembly name not found for LoadWorkflow');
+          logMessage('Assembly name not found for LoadWorkflow', 'error');
         }
       } catch (error) {
-        console.error('Error loading workflow:', error);
+        logMessage('Error loading workflow: ' + error, 'error');
       }
     },
     saveWorkflow: async () => {
@@ -51,10 +42,10 @@ const VopPicoIntegration: React.FC = () => {
         if (assemblyName) {
           await bridge.invokeMethodAsync(assemblyName, 'SaveWorkflow');
         } else {
-          console.error('Assembly name not found for SaveWorkflow');
+          logMessage('Assembly name not found for SaveWorkflow', 'error');
         }
       } catch (error) {
-        console.error('Error saving workflow:', error);
+        logMessage('Error saving workflow: ' + error, 'error');
       }
     },
     executeWorkflow: async () => {
@@ -63,59 +54,23 @@ const VopPicoIntegration: React.FC = () => {
         if (assemblyName) {
           await bridge.invokeMethodAsync(assemblyName, 'ExecuteWorkflow');
         } else {
-          console.error('Assembly name not found for ExecuteWorkflow');
+          logMessage('Assembly name not found for ExecuteWorkflow', 'error');
         }
       } catch (error) {
-        console.error('Error executing workflow:', error);
+        logMessage('Error executing workflow: ' + error, 'error');
       }
     },
     onNodeExecutionStart: async (nodeId: string) => {
-      try {
-        const assemblyName = config.getAssemblyName('OnNodeExecutionStart');
-        if (assemblyName) {
-          await bridge.invokeMethodAsync(assemblyName, 'OnNodeExecutionStart', nodeId);
-        } else {
-          console.error('Assembly name not found for OnNodeExecutionStart');
-        }
-      } catch (error) {
-        console.error('Error handling node execution start:', error);
-      }
+      logMessage(`Node execution start: ${nodeId}`);
     },
     onNodeExecutionEnd: async (nodeId: string) => {
-      try {
-        const assemblyName = config.getAssemblyName('OnNodeExecutionEnd');
-        if (assemblyName) {
-          await bridge.invokeMethodAsync(assemblyName, 'OnNodeExecutionEnd', nodeId);
-        } else {
-          console.error('Assembly name not found for OnNodeExecutionEnd');
-        }
-      } catch (error) {
-        console.error('Error handling node execution end:', error);
-      }
+      logMessage(`Node execution end: ${nodeId}`);
     },
     onWorkflowExecutionError: async (error: any) => {
-      try {
-        const assemblyName = config.getAssemblyName('OnWorkflowExecutionError');
-        if (assemblyName) {
-          await bridge.invokeMethodAsync(assemblyName, 'OnWorkflowExecutionError', error);
-        } else {
-          console.error('Assembly name not found for OnWorkflowExecutionError');
-        }
-      } catch (error) {
-        console.error('Error handling workflow execution error:', error);
-      }
+      logMessage(`Workflow execution error: ${JSON.stringify(error)}`, 'error');
     },
     onRawMessageReceived: async (message: string) => {
-      try {
-        const assemblyName = config.getAssemblyName('OnRawMessageReceived');
-        if (assemblyName) {
-          await bridge.invokeMethodAsync(assemblyName, 'OnRawMessageReceived', message);
-        } else {
-          console.error('Assembly name not found for OnRawMessageReceived');
-        }
-      } catch (error) {
-        console.error('Error sending raw message:', error);
-      }
+      logMessage(`Raw message received: ${message}`);
     },
     getDeviceStatus: async () => {
       try {
@@ -123,11 +78,11 @@ const VopPicoIntegration: React.FC = () => {
         if (assemblyName) {
           return await bridge.invokeMethodAsync(assemblyName, 'GetDeviceStatus');
         } else {
-          console.error('Assembly name not found for GetDeviceStatus');
+          logMessage('Assembly name not found for GetDeviceStatus', 'error');
           return null;
         }
       } catch (error) {
-        console.error('Error getting device status:', error);
+        logMessage('Error getting device status: ' + error, 'error');
         return null;
       }
     },
