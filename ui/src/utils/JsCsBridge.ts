@@ -32,7 +32,7 @@ class JsCsBridge {
     return !!window.HybridWebView;
   }
 
-  public invokeMethodAsync(assemblyName: string, methodName: string, ...args: any[]): Promise<any> {
+public invokeMethodAsync(methodName: string, ...args: any[]): Promise<any> {
     if (!this.isBridgeAvailable()) {
       console.warn('Bridge is not available. Falling back to console.log.');
       return Promise.resolve(console.log(`Fallback: ${methodName}`, ...args));
