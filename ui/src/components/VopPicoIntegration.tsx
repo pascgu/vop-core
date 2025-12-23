@@ -48,13 +48,21 @@ const VopPicoIntegration: React.FC = () => {
       logMessage(`Workflow execution error: ${JSON.stringify(error)}`, 'error');
     },
     onRawMessageReceived: async (message: string) => {
-      logMessage(`Raw message received: ${message}`);
+      logMessage(`Raw msg received: ${message}`);
     },
     getDeviceStatus: async () => {
       try {
         return await bridge.invokeMethodAsync('GetDeviceStatus');
       } catch (error) {
         logMessage('Error getting device status: ' + error, 'error');
+        return null;
+      }
+    },
+    checkCS2JS: async () => {
+      try {
+        return await bridge.invokeMethodAsync('checkCS2JS');
+      } catch (error) {
+        logMessage('Error in checkCS2JS: ' + error, 'error');
         return null;
       }
     },

@@ -47,6 +47,10 @@ const logMessage = (message: string, type?: 'error' | 'warning') => {
 
 
 const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true, vopHost }) => {
+  // create shortcuts for vopHost and logMessage in the window object
+  (window as any).vopHost = vopHost;
+  (window as any).logMessage = logMessage;
+
   const [nodes, setNodes, onNodesChange] = useNodesState<WorkflowNode>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<WorkflowEdge>([]);
   const [workflow, setWorkflow] = useState<Workflow>({
@@ -108,10 +112,18 @@ const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true, 
   const getDeviceStatus = async () => {
     try {
       const status = await vopHost.getDeviceStatus();
-      console.log('Device status:', status);
       logMessage(`Device status: ${status}`);
     } catch (error) {
       console.error('Error getting device status:', error);
+    }
+  };
+  
+  const checkCS2JS = async () => {
+    try {
+      logMessage(`Checking CS<=>JS bridge (#3,#4,#5)`);
+      await vopHost.checkCS2JS();
+    } catch (error) {
+      console.error('Error checking CS<=>JS bridge:', error);
     }
   };
 
@@ -165,6 +177,9 @@ const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true, 
             </button>
             <button onClick={getDeviceStatus}>
               Get Device Status
+            </button>
+            <button onClick={checkCS2JS}>
+              Check JS&lt;=&gt;CS
             </button>
             <div
               id="logDiv"

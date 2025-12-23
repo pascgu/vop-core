@@ -70,4 +70,9 @@ export interface IVopHost {
    * Gets the device status.
    */
   getDeviceStatus(): Promise<any>;
+  
+  /**
+   * Test the CS<=>JS bridge.
+   */
+  checkCS2JS(): Promise<any>;
 }
