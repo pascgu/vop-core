@@ -13,12 +13,12 @@ import ReactFlow, {
   Node
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { Workflow, WorkflowNode, WorkflowEdge } from '../interfaces/WorkflowTypes';
-import demoWorkflow from '../interfaces/DemoWorkflow.json';
+import { VopFlow, VopFlowNode, VopFlowEdge } from '../interfaces/VopFlowTypes';
+import demoVopFlow from '../interfaces/DemoVopFlow.json';
 import { IVopHost } from '../interfaces/IVopHost';
 
-interface DiagramEditorProps {
-  showDemoWorkflow?: boolean;
+interface VopFlowEditorProps {
+  showDemoVopFlow?: boolean;
   vopHost: IVopHost;
 }
 
@@ -51,11 +51,10 @@ const logMessage = (message: string, type?: 'error' | 'warning') => {
   }
 };
 
-
-const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true, vopHost }) => {
-  const [nodes, setNodes, onNodesChange] = useNodesState<WorkflowNode>([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState<WorkflowEdge>([]);
-  const [workflow, setWorkflow] = useState<Workflow>({
+const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, vopHost }) => {
+  const [nodes, setNodes, onNodesChange] = useNodesState<VopFlowNode>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<VopFlowEdge>([]);
+  const [vopFlow, setVopFlow] = useState<VopFlow>({
     version: '1.0',
     name: '',
     nodes: [],
@@ -70,8 +69,8 @@ const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true, 
 
   useEffect(() => {
     // init component
-    console.log('init component DiagramEditor');
-    
+    console.log('init component VopFlowEditor');
+
     // create shortcuts for vopHost and logMessage in the window object
     window.vopHost = vopHost;
     window.logMessage = logMessage;
@@ -90,51 +89,53 @@ const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true, 
     };
     window.addEventListener("HybridWebViewMessageReceived", onHybridWebViewMessageReceived);
 
-    if (showDemoWorkflow) {
-      setNodes(demoWorkflow.nodes as unknown as WorkflowNode[]);
-      setEdges(demoWorkflow.edges as unknown as WorkflowEdge[]);
-      setWorkflow(demoWorkflow as unknown as Workflow);
+    if (showDemoVopFlow) {
+      setNodes(demoVopFlow.nodes as unknown as VopFlowNode[]);
+      setEdges(demoVopFlow.edges as unknown as VopFlowEdge[]);
+      setVopFlow(demoVopFlow as unknown as VopFlow);
     }
 
     return () => {
       // cleanup component
-      console.log('cleanup component DiagramEditor');
+      console.log('cleanup component VopFlowEditor');
       window.removeEventListener("HybridWebViewMessageReceived", onHybridWebViewMessageReceived);
     };
-  }, [showDemoWorkflow, setNodes, setEdges, vopHost]);
+  }, [showDemoVopFlow, setNodes, setEdges, vopHost]);
 
-  const saveWorkflow = async () => {
-    const workflowData: Workflow = {
-      version: workflow.version,
-      name: workflow.name,
-      nodes: nodes as WorkflowNode[],
-      edges: edges as WorkflowEdge[],
-      metadata: workflow.metadata
+  const saveVopFlow = async () => {
+    const vopFlowData: VopFlow = {
+      version: vopFlow.version,
+      name: vopFlow.name,
+      nodes: nodes as VopFlowNode[],
+      edges: edges as VopFlowEdge[],
+      metadata: vopFlow.metadata
     };
-    console.log('Workflow:', workflowData);
+    console.log('VopFlow:', vopFlowData);
     try {
-      await vopHost.saveWorkflow();
-      console.log('Workflow saved successfully.');
+      await vopHost.saveVopFlow();
+      console.log('VopFlow saved successfully.');
     } catch (error) {
-      console.error('Error saving workflow:', error);
+      console.error('Error saving VopFlow:', error);
     }
   };
 
-  const loadWorkflow = async () => {
+  const loadVopFlow = async () => {
     try {
-      await vopHost.loadWorkflow({ /* workflow data */ });
-      console.log('Workflow loaded successfully.');
+      // load DemoVopFlow.json
+      let vopFlow_data = await fetch('/DemoWorkflow.json').then(res => res.json());
+      await vopHost.loadVopFlow(vopFlow_data);
+      console.log('VopFlow loaded successfully.');
     } catch (error) {
-      console.error('Error loading workflow:', error);
+      console.error('Error loading VopFlow:', error);
     }
   };
 
-  const executeWorkflow = async () => {
+  const executeVopFlow = async () => {
     try {
-      await vopHost.executeWorkflow();
-      console.log('Workflow executed successfully.');
+      await vopHost.executeVopFlow();
+      console.log('VopFlow executed successfully.');
     } catch (error) {
-      console.error('Error executing workflow:', error);
+      console.error('Error executing VopFlow:', error);
     }
   };
 
@@ -144,18 +145,18 @@ const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true, 
         const updatedEdges = addEdge(params, eds);
         return updatedEdges.map(edge => ({
           ...edge,
-          metadata: (edge as WorkflowEdge).metadata || {}
-        })) as WorkflowEdge[];
+          metadata: (edge as VopFlowEdge).metadata || {}
+        })) as VopFlowEdge[];
       });
 
-      setWorkflow((prevWorkflow: Workflow) => {
-        const updatedEdges = addEdge(params, prevWorkflow.edges);
+      setVopFlow((prevVopFlow: VopFlow) => {
+        const updatedEdges = addEdge(params, prevVopFlow.edges);
         return {
-          ...prevWorkflow,
+          ...prevVopFlow,
           edges: updatedEdges.map(edge => ({
             ...edge,
-            metadata: (edge as WorkflowEdge).metadata || {}
-          })) as WorkflowEdge[]
+            metadata: (edge as VopFlowEdge).metadata || {}
+          })) as VopFlowEdge[]
         };
       });
     },
@@ -177,20 +178,20 @@ const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true, 
           <Background />
           <Controls />
           <div style={{ position: 'absolute', left: 10, top: 10, zIndex: 100, display: 'flex', flexDirection: 'column' }}>
-            <button onClick={loadWorkflow}>
-              Load Workflow
+            <button onClick={loadVopFlow}>
+              Load VopFlow
             </button>
-            <button onClick={saveWorkflow}>
-              Save Workflow
+            <button onClick={saveVopFlow}>
+              Save VopFlow
             </button>
-            <button onClick={vopHost.executeWorkflow}>
-              <b>&gt;</b> Execute Workflow
+            <button onClick={vopHost.executeVopFlow}>
+              <b>{">"}</b> Execute VopFlow
             </button>
             <button onClick={vopHost.getDeviceStatus}>
               Get Device Status
             </button>
             <button onClick={vopHost.checkCS2JS}>
-              Check JS&lt;=&gt;CS
+              Check JS{"<=>"}CS
             </button>
             <div
               id="logDiv"
@@ -212,8 +213,7 @@ const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true, 
       </ReactFlowProvider>
     </div>
   );
-
 };
 
-export default DiagramEditor;
+export default VopFlowEditor;
 export { logMessage };

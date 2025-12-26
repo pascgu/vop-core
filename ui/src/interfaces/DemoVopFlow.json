@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "name": "Demo Workflow",
+  "name": "Demo VopFlow",
   "nodes": [
     {
       "id": "node-1",

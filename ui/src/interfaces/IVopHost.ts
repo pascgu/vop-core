@@ -1,4 +1,4 @@
-import { Workflow } from '../interfaces/WorkflowTypes';
+import { VopFlow } from '../interfaces/VopFlowTypes';
 
 /**
  * IVopHost Interface
@@ -22,21 +22,21 @@ export interface IVopHost {
   receiveDataFromDevice(data: any): Promise<void>;
 
   /**
-   * Loads a workflow from data.
+   * Loads a VopFlow from data.
    *
-   * @param workflowData - The workflow data to load.
+   * @param VopFlowData - The VopFlow data to load.
    */
-  loadWorkflow(workflowData: Workflow): Promise<void>;
+  loadVopFlow(VopFlowData: VopFlow): Promise<void>;
 
   /**
-   * Saves the current workflow.
+   * Saves the current VopFlow.
    */
-  saveWorkflow(): Promise<void>;
+  saveVopFlow(): Promise<void>;
 
   /**
-   * Executes the current workflow.
+   * Executes the current VopFlow.
    */
-  executeWorkflow(): Promise<void>;
+  executeVopFlow(): Promise<void>;
 
   /**
    * Handles node execution start event.
@@ -53,11 +53,11 @@ export interface IVopHost {
   onNodeExecutionEnd(nodeId: string): Promise<void>;
 
   /**
-   * Handles errors during workflow execution.
+   * Handles errors during VopFlow execution.
    *
    * @param error - The error that occurred.
    */
-  onWorkflowExecutionError(error: any): Promise<void>;
+  onVopFlowExecutionError(error: any): Promise<void>;
 
   /**
    * Sends a raw message to the device.
@@ -70,7 +70,7 @@ export interface IVopHost {
    * Gets the device status.
    */
   getDeviceStatus(): Promise<any>;
-  
+
   /**
    * Test the CS<=>JS bridge.
    */

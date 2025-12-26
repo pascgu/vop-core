@@ -1,15 +1,15 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "WorkflowSchema",
+  "title": "VopFlowSchema",
   "type": "object",
   "properties": {
     "version": {
       "type": "string",
-      "description": "Version of the workflow schema"
+      "description": "Version of the VopFlow schema"
     },
     "name": {
       "type": "string",
-      "description": "Name of the workflow"
+      "description": "Name of the VopFlow"
     },
     "nodes": {
       "type": "array",
@@ -74,21 +74,21 @@
     },
     "metadata": {
       "type": "object",
-      "description": "Workflow metadata",
+      "description": "VopFlow metadata",
       "properties": {
         "author": {
           "type": "string",
-          "description": "Author of the workflow"
+          "description": "Author of the VopFlow"
         },
         "createdAt": {
           "type": "string",
           "format": "date-time",
-          "description": "Creation timestamp of the workflow"
+          "description": "Creation timestamp of the VopFlow"
         },
         "updatedAt": {
           "type": "string",
           "format": "date-time",
-          "description": "Last update timestamp of the workflow"
+          "description": "Last update timestamp of the VopFlow"
         }
       }
     }

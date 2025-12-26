@@ -1,6 +1,6 @@
 import React from 'react';
 import { IVopHost } from '../interfaces/IVopHost';
-import DiagramEditor, { logMessage } from './DiagramEditor';
+import VopFlowEditor, { logMessage } from './VopFlowEditor';
 import JsCsBridge from '../utils/JsCsBridge';
 
 const VopPicoIntegration: React.FC = () => {
@@ -17,25 +17,25 @@ const VopPicoIntegration: React.FC = () => {
     receiveDataFromDevice: async (data: any) => {
       logMessage(`Data received from device: ${JSON.stringify(data)}`);
     },
-    loadWorkflow: async (workflowData: any) => {
+    loadVopFlow: async (vopFlowData: any) => {
       try {
-        await bridge.invokeMethodAsync('LoadWorkflow', workflowData);
+        await bridge.invokeMethodAsync('LoadVopFlow', vopFlowData);
       } catch (error) {
-        logMessage('Error loading workflow: ' + error, 'error');
+        logMessage('Error loading VopFlow: ' + error, 'error');
       }
     },
-    saveWorkflow: async () => {
+    saveVopFlow: async () => {
       try {
-        await bridge.invokeMethodAsync('SaveWorkflow');
+        await bridge.invokeMethodAsync('SaveVopFlow');
       } catch (error) {
-        logMessage('Error saving workflow: ' + error, 'error');
+        logMessage('Error saving VopFlow: ' + error, 'error');
       }
     },
-    executeWorkflow: async () => {
+    executeVopFlow: async () => {
       try {
-        await bridge.invokeMethodAsync('ExecuteWorkflow');
+        await bridge.invokeMethodAsync('ExecuteVopFlow');
       } catch (error) {
-        logMessage('Error executing workflow: ' + error, 'error');
+        logMessage('Error executing VopFlow: ' + error, 'error');
       }
     },
     onNodeExecutionStart: async (nodeId: string) => {
@@ -44,8 +44,8 @@ const VopPicoIntegration: React.FC = () => {
     onNodeExecutionEnd: async (nodeId: string) => {
       logMessage(`Node execution end: ${nodeId}`);
     },
-    onWorkflowExecutionError: async (error: any) => {
-      logMessage(`Workflow execution error: ${JSON.stringify(error)}`, 'error');
+    onVopFlowExecutionError: async (error: any) => {
+      logMessage(`VopFlow execution error: ${JSON.stringify(error)}`, 'error');
     },
     onRawMessageReceived: async (message: string) => {
       logMessage(`Raw msg received in JS: ${message}`);
@@ -68,7 +68,7 @@ const VopPicoIntegration: React.FC = () => {
     },
   };
 
-  return <DiagramEditor vopHost={vopHost} />;
+  return <VopFlowEditor vopHost={vopHost} />;
 };
 
 export default VopPicoIntegration;

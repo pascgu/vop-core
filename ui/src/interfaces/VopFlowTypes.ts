@@ -1,25 +1,25 @@
 import { Node, Edge, XYPosition } from 'reactflow';
 
-export type WorkflowNode = Node & {
+export type VopFlowNode = Node & {
   type: 'input' | 'output' | 'processing';
   properties: any;
   position: XYPosition;
 };
 
-export type WorkflowEdge = Edge & {
+export type VopFlowEdge = Edge & {
   metadata: any;
 };
 
-export interface WorkflowMetadata {
+export interface VopFlowMetadata {
   author: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface Workflow {
+export interface VopFlow {
   version: string;
   name: string;
-  nodes: WorkflowNode[];
-  edges: WorkflowEdge[];
-  metadata: WorkflowMetadata;
+  nodes: VopFlowNode[];
+  edges: VopFlowEdge[];
+  metadata: VopFlowMetadata;
 }
