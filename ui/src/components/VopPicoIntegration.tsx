@@ -48,7 +48,7 @@ const VopPicoIntegration: React.FC = () => {
       logMessage(`Workflow execution error: ${JSON.stringify(error)}`, 'error');
     },
     onRawMessageReceived: async (message: string) => {
-      logMessage(`Raw msg received: ${message}`);
+      logMessage(`Raw msg received in JS: ${message}`);
     },
     getDeviceStatus: async () => {
       try {

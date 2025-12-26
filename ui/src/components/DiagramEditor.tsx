@@ -22,6 +22,12 @@ interface DiagramEditorProps {
   vopHost: IVopHost;
 }
 
+declare global {
+    interface Window {
+        vopHost: IVopHost;
+        logMessage: (message: string, type?: 'error' | 'warning') => void;
+    }
+}
 
 const logMessage = (message: string, type?: 'error' | 'warning') => {
   if (type === 'error') {
@@ -47,10 +53,6 @@ const logMessage = (message: string, type?: 'error' | 'warning') => {
 
 
 const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true, vopHost }) => {
-  // create shortcuts for vopHost and logMessage in the window object
-  (window as any).vopHost = vopHost;
-  (window as any).logMessage = logMessage;
-
   const [nodes, setNodes, onNodesChange] = useNodesState<WorkflowNode>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<WorkflowEdge>([]);
   const [workflow, setWorkflow] = useState<Workflow>({
@@ -67,12 +69,39 @@ const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true, 
   const logRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // init component
+    console.log('init component DiagramEditor');
+    
+    // create shortcuts for vopHost and logMessage in the window object
+    window.vopHost = vopHost;
+    window.logMessage = logMessage;
+    let last_msg = '';
+    let last_time = 0;
+    const onHybridWebViewMessageReceived = (e: Event) => {
+        if (e instanceof CustomEvent) {
+          if ( Date.now() - last_time > 100 || last_msg != e.detail.message) { // hack to avoid 2nd raise of the same message
+            window.vopHost.onRawMessageReceived(e.detail.message);
+          } else {
+            logMessage('JS onRawMessageReceived ignoring duplicate message', 'warning');
+          }
+          last_msg = e.detail.message;
+          last_time = Date.now();
+        }
+    };
+    window.addEventListener("HybridWebViewMessageReceived", onHybridWebViewMessageReceived);
+
     if (showDemoWorkflow) {
       setNodes(demoWorkflow.nodes as unknown as WorkflowNode[]);
       setEdges(demoWorkflow.edges as unknown as WorkflowEdge[]);
       setWorkflow(demoWorkflow as unknown as Workflow);
     }
-  }, [showDemoWorkflow, setNodes, setEdges]);
+
+    return () => {
+      // cleanup component
+      console.log('cleanup component DiagramEditor');
+      window.removeEventListener("HybridWebViewMessageReceived", onHybridWebViewMessageReceived);
+    };
+  }, [showDemoWorkflow, setNodes, setEdges, vopHost]);
 
   const saveWorkflow = async () => {
     const workflowData: Workflow = {
@@ -106,24 +135,6 @@ const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true, 
       console.log('Workflow executed successfully.');
     } catch (error) {
       console.error('Error executing workflow:', error);
-    }
-  };
-
-  const getDeviceStatus = async () => {
-    try {
-      const status = await vopHost.getDeviceStatus();
-      logMessage(`Device status: ${status}`);
-    } catch (error) {
-      console.error('Error getting device status:', error);
-    }
-  };
-  
-  const checkCS2JS = async () => {
-    try {
-      logMessage(`Checking CS<=>JS bridge (#3,#4,#5)`);
-      await vopHost.checkCS2JS();
-    } catch (error) {
-      console.error('Error checking CS<=>JS bridge:', error);
     }
   };
 
@@ -172,13 +183,13 @@ const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true, 
             <button onClick={saveWorkflow}>
               Save Workflow
             </button>
-            <button onClick={executeWorkflow}>
+            <button onClick={vopHost.executeWorkflow}>
               <b>&gt;</b> Execute Workflow
             </button>
-            <button onClick={getDeviceStatus}>
+            <button onClick={vopHost.getDeviceStatus}>
               Get Device Status
             </button>
-            <button onClick={checkCS2JS}>
+            <button onClick={vopHost.checkCS2JS}>
               Check JS&lt;=&gt;CS
             </button>
             <div
@@ -201,6 +212,7 @@ const DiagramEditor: React.FC<DiagramEditorProps> = ({ showDemoWorkflow = true, 
       </ReactFlowProvider>
     </div>
   );
+
 };
 
 export default DiagramEditor;
