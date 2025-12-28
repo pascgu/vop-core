@@ -190,11 +190,11 @@ const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, v
             <button onClick={vopHost.getDeviceStatus}>
               Get Device Status
             </button>
-            <div style={{ border: '1px solid #ccc', padding: '10px', marginTop: '10px' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '10px' }}>
-                <label style={{ fontWeight: 'bold' }}>Tests C#{"<=>"}JS</label>
+            <div style={{ border: '1px solid #ccc', padding: '2px', marginTop: '3px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '2px' }}>
+                <label style={{ fontSize: 'small' }}>Tests C#{"<=>"}JS</label>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <div style={{ display: 'flex', flexDirection: 'row', paddingLeft: '10px', paddingRight: '10px' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', marginRight: '10px' }}>
                   <button onClick={vopHost.JSeval}>
                     JSeval
