@@ -74,5 +74,8 @@ export interface IVopHost {
   /**
    * Test the CS<=>JS bridge.
    */
-  checkCS2JS(): Promise<any>;
+  JSeval(): Promise<void>;
+  JSinvoke(): Promise<void>;
+  JSraw(): Promise<void>;
+  CSraw(): void;
 }

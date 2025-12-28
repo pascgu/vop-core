@@ -52,18 +52,42 @@ const VopPicoIntegration: React.FC = () => {
     },
     getDeviceStatus: async () => {
       try {
-        return await bridge.invokeMethodAsync('GetDeviceStatus');
+        let s = await bridge.invokeMethodAsync('GetDeviceStatus');
+        logMessage(`Device status: ${s}`);
       } catch (error) {
         logMessage('Error getting device status: ' + error, 'error');
         return null;
       }
     },
-    checkCS2JS: async () => {
+    JSeval: async () => {
       try {
-        return await bridge.invokeMethodAsync('checkCS2JS');
+        return await bridge.invokeMethodAsync('JSeval');
       } catch (error) {
-        logMessage('Error in checkCS2JS: ' + error, 'error');
+        logMessage('Error in JSeval: ' + error, 'error');
         return null;
+      }
+    },
+    JSinvoke: async () => {
+      try {
+        return await bridge.invokeMethodAsync('JSinvoke');
+      } catch (error) {
+        logMessage('Error in JSinvoke: ' + error, 'error');
+        return null;
+      }
+    },
+    JSraw: async () => {
+      try {
+        return await bridge.invokeMethodAsync('JSraw');
+      } catch (error) {
+        logMessage('Error in JSraw: ' + error, 'error');
+        return null;
+      }
+    },
+    CSraw: () => {
+      try {
+        window.HybridWebView.SendRawMessage('CSraw : JS send a raw message');
+      } catch (error) {
+        logMessage('Error in JSraw: ' + error, 'error');
       }
     },
   };

@@ -1,5 +1,5 @@
 import React from 'react';
-import DiagramEditor from './DiagramEditor';
+import VopFlowEditor from './VopFlowEditor';
 
 const VopTestIntegration: React.FC = () => {
   // Create a dummy vopHost for the DiagramEditor component
@@ -10,14 +10,14 @@ const VopTestIntegration: React.FC = () => {
     receiveDataFromDevice: async (data: any) => {
       console.log('Dummy receiveDataFromDevice:', data);
     },
-    loadWorkflow: async (workflowData: any) => {
-      console.log('Dummy loadWorkflow:', workflowData);
+    loadVopFlow: async (workflowData: any) => {
+      console.log('Dummy loadVopFlow:', workflowData);
     },
-    saveWorkflow: async () => {
-      console.log('Dummy saveWorkflow');
+    saveVopFlow: async () => {
+      console.log('Dummy saveVopFlow');
     },
-    executeWorkflow: async () => {
-      console.log('Dummy executeWorkflow');
+    executeVopFlow: async () => {
+      console.log('Dummy executeVopFlow');
     },
     onNodeExecutionStart: async (nodeId: string) => {
       console.log('Dummy onNodeExecutionStart:', nodeId);
@@ -25,8 +25,8 @@ const VopTestIntegration: React.FC = () => {
     onNodeExecutionEnd: async (nodeId: string) => {
       console.log('Dummy onNodeExecutionEnd:', nodeId);
     },
-    onWorkflowExecutionError: async (error: any) => {
-      console.log('Dummy onWorkflowExecutionError:', error);
+    onVopFlowExecutionError: async (error: any) => {
+      console.log('Dummy onVopFlowExecutionError:', error);
     },
     onRawMessageReceived: async (message: string) => {
       console.log('Dummy onRawMessageReceived:', message);
@@ -35,9 +35,18 @@ const VopTestIntegration: React.FC = () => {
       console.log('Dummy getDeviceStatus');
       return 'Dummy device status';
     },
+    JSeval: async () => {
+      console.log('Dummy JSeval');
+    },
+    JSinvoke: async () => {
+      console.log('Dummy JSinvoke');
+    },
+    JSraw: async () => {
+      console.log('Dummy JSraw');
+    },
   };
 
-  return <DiagramEditor vopHost={dummyVopHost} />;
+  return <VopFlowEditor vopHost={dummyVopHost} />;
 };
 
 export default VopTestIntegration;

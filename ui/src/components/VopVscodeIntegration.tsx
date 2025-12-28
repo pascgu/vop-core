@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { IVopHost } from '../interfaces/IVopHost';
-import DiagramEditor from './DiagramEditor';
+import VopFlowEditor from './VopFlowEditor';
 
 const VopVscodeIntegration: React.FC = () => {
   const vopHost: IVopHost = {
@@ -14,17 +14,17 @@ const VopVscodeIntegration: React.FC = () => {
       console.log('Received data from device:', data);
       return Promise.resolve();
     },
-    loadWorkflow: (workflowData: any) => {
+    loadVopFlow: (workflowData: any) => {
       // Implement the logic to load a workflow
       console.log('Loading workflow:', workflowData);
       return Promise.resolve();
     },
-    saveWorkflow: () => {
+    saveVopFlow: () => {
       // Implement the logic to save the current workflow
       console.log('Saving workflow');
       return Promise.resolve();
     },
-    executeWorkflow: () => {
+    executeVopFlow: () => {
       // Implement the logic to execute the current workflow
       console.log('Executing workflow');
       return Promise.resolve();
@@ -39,7 +39,7 @@ const VopVscodeIntegration: React.FC = () => {
       console.log('Node execution end:', nodeId);
       return Promise.resolve();
     },
-    onWorkflowExecutionError: (error: any) => {
+    onVopFlowExecutionError: (error: any) => {
       // Implement the logic to handle errors during workflow execution
       console.log('Workflow execution error:', error);
       return Promise.resolve();
@@ -54,6 +54,21 @@ const VopVscodeIntegration: React.FC = () => {
       console.log('Getting device status');
       return Promise.resolve('Device is ready');
     },
+    JSeval: () => {
+      // Implement the logic for JSeval
+      console.log('JSeval');
+      return Promise.resolve();
+    },
+    JSinvoke: () => {
+      // Implement the logic for JSinvoke
+      console.log('JSinvoke');
+      return Promise.resolve();
+    },
+    JSraw: () => {
+      // Implement the logic for JSraw
+      console.log('JSraw');
+      return Promise.resolve();
+    },
   };
 
   useEffect(() => {
@@ -64,7 +79,7 @@ const VopVscodeIntegration: React.FC = () => {
     vopHost.receiveDataFromDevice({ message: 'Device is ready' });
   }, []);
 
-  return <DiagramEditor vopHost={vopHost} />;
+  return <VopFlowEditor vopHost={vopHost} />;
 };
 
 export default VopVscodeIntegration;
