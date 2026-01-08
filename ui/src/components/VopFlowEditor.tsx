@@ -112,8 +112,22 @@ const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, v
     };
     console.log('VopFlow:', vopFlowData);
     try {
-      await vopHost.saveVopFlow();
-      console.log('VopFlow saved successfully.');
+      const processedVopFlowData = await vopHost.onSavingVopFlow(vopFlowData);
+      console.log('Processed VopFlow Data:', processedVopFlowData);
+      if (processedVopFlowData) {
+        const blob = new Blob([processedVopFlowData], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `vopflow-${new Date().toISOString()}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        console.log('VopFlow saved successfully.');
+      } else {
+        console.error('Error processing VopFlow data.');
+      }
     } catch (error) {
       console.error('Error saving VopFlow:', error);
     }

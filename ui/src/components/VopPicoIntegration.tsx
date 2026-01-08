@@ -24,11 +24,12 @@ const VopPicoIntegration: React.FC = () => {
         logMessage('Error loading VopFlow: ' + error, 'error');
       }
     },
-    saveVopFlow: async () => {
+    onSavingVopFlow: async (vopFlowData: any) => {
       try {
-        await bridge.invokeMethodAsync('SaveVopFlow');
+        return await bridge.invokeMethodAsync('OnSavingVopFlow', vopFlowData);
       } catch (error) {
         logMessage('Error saving VopFlow: ' + error, 'error');
+        return null;
       }
     },
     executeVopFlow: async () => {

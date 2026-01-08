@@ -31,7 +31,7 @@ export interface IVopHost {
   /**
    * Saves the current VopFlow.
    */
-  saveVopFlow(): Promise<void>;
+  onSavingVopFlow(vopFlowData: any): Promise<any>;
 
   /**
    * Executes the current VopFlow.
