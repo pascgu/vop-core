@@ -1,5 +1,6 @@
 import React from 'react';
 import { IVopHost } from '../interfaces/IVopHost';
+import { VopFlow } from '../interfaces/VopFlowTypes';
 import VopFlowEditor, { logMessage } from './VopFlowEditor';
 import JsCsBridge from '../utils/JsCsBridge';
 
@@ -17,20 +18,21 @@ const VopPicoIntegration: React.FC = () => {
     receiveDataFromDevice: async (data: any) => {
       logMessage(`Data received from device: ${JSON.stringify(data)}`);
     },
-    loadVopFlow: async (vopFlowData: any) => {
-      try {
-        await bridge.invokeMethodAsync('LoadVopFlow', vopFlowData);
-      } catch (error) {
-        logMessage('Error loading VopFlow: ' + error, 'error');
+    onLoadingVopFlow: async (vopFlowJson: string) => {
+      const response = await bridge.invokeMethodAsync('OnLoadingVopFlow', vopFlowJson);
+      if (typeof response === 'string') {
+        if (response.startsWith('{')) {
+          return JSON.parse(response) as VopFlow;
+        } else {
+          throw new Error(`Error loading VopFlow: ${response}`);
+        }
+      } else {
+        throw new Error(`Error loading VopFlow: Invalid response format: ${response}`);
       }
     },
-    onSavingVopFlow: async (vopFlowData: any) => {
-      try {
-        return await bridge.invokeMethodAsync('OnSavingVopFlow', vopFlowData);
-      } catch (error) {
-        logMessage('Error saving VopFlow: ' + error, 'error');
-        return null;
-      }
+    onSavingVopFlow: async (vopFlow: VopFlow) => {
+      const vopFlowJson = JSON.stringify(vopFlow);
+      return await bridge.invokeMethodAsync('OnSavingVopFlow', vopFlowJson);
     },
     executeVopFlow: async () => {
       try {

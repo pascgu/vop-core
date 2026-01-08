@@ -26,12 +26,12 @@ export interface IVopHost {
    *
    * @param VopFlowData - The VopFlow data to load.
    */
-  loadVopFlow(VopFlowData: VopFlow): Promise<void>;
+  onLoadingVopFlow(vopFlowJson: string): Promise<VopFlow>;
 
   /**
    * Saves the current VopFlow.
    */
-  onSavingVopFlow(vopFlowData: any): Promise<any>;
+  onSavingVopFlow(vopFlow: VopFlow): Promise<string>;
 
   /**
    * Executes the current VopFlow.

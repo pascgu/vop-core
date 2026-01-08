@@ -134,14 +134,29 @@ const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, v
   };
 
   const loadVopFlow = async () => {
-    try {
-      // load DemoVopFlow.json
-      let vopFlow_data = await fetch('/DemoWorkflow.json').then(res => res.json());
-      await vopHost.loadVopFlow(vopFlow_data);
-      console.log('VopFlow loaded successfully.');
-    } catch (error) {
-      console.error('Error loading VopFlow:', error);
-    }
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = async (event) => {
+      const file = (event.target as HTMLInputElement).files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          const vopFlowJson = e.target?.result as string;
+          try {
+            const vopFlowData = await vopHost.onLoadingVopFlow(vopFlowJson);
+            setNodes(vopFlowData.nodes as unknown as VopFlowNode[]);
+            setEdges(vopFlowData.edges as unknown as VopFlowEdge[]);
+            setVopFlow(vopFlowData);
+            logMessage('VopFlow loaded successfully.');
+          } catch (error) {
+            logMessage('Error loading VopFlow: ' + error, 'error');
+          }
+        };
+        reader.readAsText(file);
+      }
+    };
+    input.click();
   };
 
   const executeVopFlow = async () => {
