@@ -66,6 +66,8 @@ const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, v
     }
   });
   const logRef = useRef<HTMLDivElement>(null);
+  const [serialPorts, setSerialPorts] = useState<{ portName: string; details: string }[]>([]);
+  const [selectedPort, setSelectedPort] = useState<string | null>(null);
 
   useEffect(() => {
     // init component
@@ -159,12 +161,26 @@ const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, v
     input.click();
   };
 
-  const executeVopFlow = async () => {
+  const listSerialPorts = async () => {
     try {
-      await vopHost.executeVopFlow();
-      console.log('VopFlow executed successfully.');
+      const ports = await vopHost.listSerialPorts();
+      setSerialPorts(ports.map(port => {
+        const [portName, details] = port.split(' (');
+        return { portName, details: details ? details.slice(0, -1) : '' };
+      }));
+      console.log('Available serial ports:', ports);
     } catch (error) {
-      console.error('Error executing VopFlow:', error);
+      console.error('Error listing serial ports:', error);
+    }
+  };
+
+  const selectSerialPort = async (portName: string) => {
+    try {
+      const selectedPort = await vopHost.selectSerialPort(portName);
+      setSelectedPort(selectedPort);
+      console.log('Selected serial port:', selectedPort);
+    } catch (error) {
+      console.error('Error selecting serial port:', error);
     }
   };
 
@@ -242,6 +258,21 @@ const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, v
                 </div>
               </div>
             </div>
+            <div style={{ marginTop: '10px' }}>
+              <button onClick={listSerialPorts}>
+                List Serial Ports
+              </button>
+            </div>
+            {serialPorts.length > 0 && (
+              <select onChange={(e) => selectSerialPort(e.target.value)} value={selectedPort || ''}>
+                <option value="">Select a serial port</option>
+                {serialPorts.map((port) => (
+                  <option key={port.portName} value={port.portName}>
+                    {port.details ? `${port.portName} (${port.details})` : port.portName}
+                  </option>
+                ))}
+              </select>
+            )}
             <div
               id="logDiv"
               ref={logRef}

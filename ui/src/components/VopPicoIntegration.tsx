@@ -93,6 +93,25 @@ const VopPicoIntegration: React.FC = () => {
         logMessage('Error in JSraw: ' + error, 'error');
       }
     },
+    listSerialPorts: async () => {
+      try {
+        return await bridge.invokeMethodAsync('ListSerialPorts');
+      } catch (error) {
+        logMessage('Error listing serial ports: ' + error, 'error');
+        return [];
+      }
+    },
+    selectSerialPort: async (portName: string) => {
+      try {
+        const selectedPort = await bridge.invokeMethodAsync('SelectSerialPort', portName);
+        const port = selectedPort.split(' (')[0];
+        logMessage('Serial port: ' + port);
+        return port;
+      } catch (error) {
+        logMessage('Error selecting serial port: ' + error, 'error');
+        return null;
+      }
+    },
   };
 
   return <VopFlowEditor vopHost={vopHost} />;

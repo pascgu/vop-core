@@ -78,4 +78,16 @@ export interface IVopHost {
   JSinvoke(): Promise<void>;
   JSraw(): Promise<void>;
   CSraw(): void;
+
+  /**
+   * Lists available serial ports.
+   */
+  listSerialPorts(): Promise<string[]>;
+
+  /**
+   * Selects a serial port.
+   *
+   * @param portName - The name of the serial port to select.
+   */
+  selectSerialPort(portName: string): Promise<string>;
 }
