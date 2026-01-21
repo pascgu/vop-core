@@ -29,26 +29,52 @@ declare global {
     }
 }
 
-const logMessage = (message: string, type?: 'error' | 'warning') => {
-  if (type === 'error') {
-    console.error(message);
-  } else if (type === 'warning') {
-    console.warn(message);
-  } else {
-    console.log(message);
-  }
+const messageQueue: { message: string; type?: 'error' | 'warning' }[] = [];
+let isProcessingQueue = false;
 
-  const logDiv = document.getElementById('logDiv');
-  if (logDiv) {
-    const newLog = document.createElement('div');
-    newLog.textContent = message;
-    if (type === 'error') {
-      newLog.style.color = 'red';
-    } else if (type === 'warning') {
-      newLog.style.color = 'orange';
+const processQueue = async () => {
+  if (isProcessingQueue) return;
+  isProcessingQueue = true;
+
+  while (messageQueue.length > 0) {
+    const { message, type } = messageQueue.shift()!;
+    try {
+      if (type === 'error') {
+        console.error(message);
+      } else if (type === 'warning') {
+        console.warn(message);
+      } else {
+        console.log(message);
+      }
+
+      await new Promise(resolve => requestAnimationFrame(resolve));
+
+      const logDiv = document.getElementById('logDiv');
+      if (logDiv) {
+        const newLog = document.createElement('div');
+        newLog.textContent = message;
+        if (type === 'error') {
+          newLog.style.color = 'red';
+        } else if (type === 'warning') {
+          newLog.style.color = 'orange';
+        }
+
+        if (logDiv.firstChild) {
+          logDiv.insertBefore(newLog, logDiv.firstChild);
+        } else {
+          logDiv.appendChild(newLog);
+        }
+      }
+    } catch (error) {
+      console.error('Error processing message:', error);
     }
-    logDiv.insertBefore(newLog, logDiv.firstChild);
   }
+  isProcessingQueue = false;
+};
+
+const logMessage = async (message: string, type?: 'error' | 'warning') => {
+  messageQueue.push({ message, type });
+  await processQueue();
 };
 
 const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, vopHost }) => {
@@ -78,12 +104,12 @@ const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, v
     window.logMessage = logMessage;
     let last_msg = '';
     let last_time = 0;
-    const onHybridWebViewMessageReceived = (e: Event) => {
+    const onHybridWebViewMessageReceived = async (e: Event) => {
         if (e instanceof CustomEvent) {
           if ( Date.now() - last_time > 100 || last_msg != e.detail.message) { // hack to avoid 2nd raise of the same message
             window.vopHost.onRawMessageReceived(e.detail.message);
           } else {
-            logMessage('JS onRawMessageReceived ignoring duplicate message', 'warning');
+            await logMessage('JS onRawMessageReceived ignoring duplicate message', 'warning');
           }
           last_msg = e.detail.message;
           last_time = Date.now();
@@ -150,9 +176,9 @@ const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, v
             setNodes(vopFlowData.nodes as unknown as VopFlowNode[]);
             setEdges(vopFlowData.edges as unknown as VopFlowEdge[]);
             setVopFlow(vopFlowData);
-            logMessage('VopFlow loaded successfully.');
+            await logMessage('VopFlow loaded successfully.');
           } catch (error) {
-            logMessage('Error loading VopFlow: ' + error, 'error');
+            await logMessage('Error loading VopFlow: ' + JSON.stringify(error), 'error');
           }
         };
         reader.readAsText(file);
@@ -207,6 +233,15 @@ const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, v
     },
     [setEdges]
   );
+
+  const sendTestMessageToPico = async () => {
+    try {
+      await window.vopHost.sendCodeToDevice("print('from VoP '+str(1*2)+' Pico')");
+    } catch (error) {
+      console.error("Error sending test message to Pico:", error);
+      await logMessage(`Error sending test message to Pico: ${JSON.stringify(error)}`);
+    }
+  };
 
   return (
     <div style={{ width: '100%', height: '100vh' }}>
@@ -273,6 +308,12 @@ const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, v
                 ))}
               </select>
             )}
+            <button
+              onClick={sendTestMessageToPico}
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2"
+            >
+              Send Test Message
+            </button>
             <div
               id="logDiv"
               ref={logRef}

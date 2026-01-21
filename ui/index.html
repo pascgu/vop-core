@@ -22,7 +22,7 @@
         window.addEventListener(
             "HybridWebViewMessageReceived",
             function (e) {
-                LogMessage("Raw message PG1: " + e.detail.message);
+                LogMessage("Raw message: " + e.detail.message);
             });
 
         async function InvokeDoAsyncWorkParams() {

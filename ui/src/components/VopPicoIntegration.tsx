@@ -12,11 +12,11 @@ const VopPicoIntegration: React.FC = () => {
       try {
         await bridge.invokeMethodAsync('SendCodeToDevice', code);
       } catch (error) {
-        logMessage('Error sending code to device: ' + error, 'error');
+        await logMessage('Error sending code to device: ' + JSON.stringify(error), 'error');
       }
     },
     receiveDataFromDevice: async (data: any) => {
-      logMessage(`Data received from device: ${JSON.stringify(data)}`);
+      await logMessage(`Data received from device: ${JSON.stringify(data)}`);
     },
     onLoadingVopFlow: async (vopFlowJson: string) => {
       const response = await bridge.invokeMethodAsync('OnLoadingVopFlow', vopFlowJson);
@@ -38,27 +38,27 @@ const VopPicoIntegration: React.FC = () => {
       try {
         await bridge.invokeMethodAsync('ExecuteVopFlow');
       } catch (error) {
-        logMessage('Error executing VopFlow: ' + error, 'error');
+        await logMessage('Error executing VopFlow: ' + JSON.stringify(error), 'error');
       }
     },
     onNodeExecutionStart: async (nodeId: string) => {
-      logMessage(`Node execution start: ${nodeId}`);
+      await logMessage(`Node execution start: ${JSON.stringify(nodeId)}`);
     },
     onNodeExecutionEnd: async (nodeId: string) => {
-      logMessage(`Node execution end: ${nodeId}`);
+      await logMessage(`Node execution end: ${JSON.stringify(nodeId)}`);
     },
     onVopFlowExecutionError: async (error: any) => {
-      logMessage(`VopFlow execution error: ${JSON.stringify(error)}`, 'error');
+      await logMessage(`VopFlow execution error: ${JSON.stringify(error)}`, 'error');
     },
     onRawMessageReceived: async (message: string) => {
-      logMessage(`Raw msg received in JS: ${message}`);
+      await logMessage(`Raw msg received in JS: ${JSON.stringify(message)}`);
     },
     getDeviceStatus: async () => {
       try {
         let s = await bridge.invokeMethodAsync('GetDeviceStatus');
-        logMessage(`Device status: ${s}`);
+        await logMessage(`Device status: ${JSON.stringify(s)}`);
       } catch (error) {
-        logMessage('Error getting device status: ' + error, 'error');
+        await logMessage('Error getting device status: ' + JSON.stringify(error), 'error');
         return null;
       }
     },
@@ -66,7 +66,7 @@ const VopPicoIntegration: React.FC = () => {
       try {
         return await bridge.invokeMethodAsync('JSeval');
       } catch (error) {
-        logMessage('Error in JSeval: ' + error, 'error');
+        await logMessage('Error in JSeval: ' + JSON.stringify(error), 'error');
         return null;
       }
     },
@@ -74,7 +74,7 @@ const VopPicoIntegration: React.FC = () => {
       try {
         return await bridge.invokeMethodAsync('JSinvoke');
       } catch (error) {
-        logMessage('Error in JSinvoke: ' + error, 'error');
+        await logMessage('Error in JSinvoke: ' + JSON.stringify(error), 'error');
         return null;
       }
     },
@@ -82,22 +82,22 @@ const VopPicoIntegration: React.FC = () => {
       try {
         return await bridge.invokeMethodAsync('JSraw');
       } catch (error) {
-        logMessage('Error in JSraw: ' + error, 'error');
+        await logMessage('Error in JSraw: ' + JSON.stringify(error), 'error');
         return null;
       }
     },
-    CSraw: () => {
+    CSraw: async () => {
       try {
         window.HybridWebView.SendRawMessage('CSraw : JS send a raw message');
       } catch (error) {
-        logMessage('Error in JSraw: ' + error, 'error');
+        await logMessage('Error in JSraw: ' + JSON.stringify(error), 'error');
       }
     },
     listSerialPorts: async () => {
       try {
         return await bridge.invokeMethodAsync('ListSerialPorts');
       } catch (error) {
-        logMessage('Error listing serial ports: ' + error, 'error');
+        await logMessage('Error listing serial ports: ' + JSON.stringify(error), 'error');
         return [];
       }
     },
@@ -105,10 +105,10 @@ const VopPicoIntegration: React.FC = () => {
       try {
         const selectedPort = await bridge.invokeMethodAsync('SelectSerialPort', portName);
         const port = selectedPort.split(' (')[0];
-        logMessage('Serial port: ' + port);
+        await logMessage('Serial port: ' + JSON.stringify(port));
         return port;
       } catch (error) {
-        logMessage('Error selecting serial port: ' + error, 'error');
+        await logMessage('Error selecting serial port: ' + JSON.stringify(error), 'error');
         return null;
       }
     },
