@@ -1,5 +1,5 @@
 import React from 'react';
-import { IVopHost } from '../interfaces/IVopHost';
+import { IVopHost, LogMessageType } from '../interfaces/IVopHost';
 import { VopFlow } from '../interfaces/VopFlowTypes';
 import VopFlowEditor, { logMessage } from './VopFlowEditor';
 import JsCsBridge from '../utils/JsCsBridge';
@@ -15,8 +15,13 @@ const VopPicoIntegration: React.FC = () => {
         await logMessage('Error sending code to device: ' + JSON.stringify(error), 'error');
       }
     },
-    receiveDataFromDevice: async (data: any) => {
-      await logMessage(`Data received from device: ${JSON.stringify(data)}`);
+    receiveDataFromDevice: async (data: string, type?: LogMessageType) => {
+      try {
+        console.log(`Received data from device (type: ${type}): ${data}`);
+        await logMessage(data, type);
+      } catch (error) {
+        await logMessage('Error receiving data from device: ' + JSON.stringify(error), 'error');
+      }
     },
     onLoadingVopFlow: async (vopFlowJson: string) => {
       const response = await bridge.invokeMethodAsync('OnLoadingVopFlow', vopFlowJson);

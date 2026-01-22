@@ -1,21 +1,12 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import ReactFlow, {
-  ReactFlowProvider,
-  Background,
-  Controls,
-  addEdge,
-  Connection,
-  Edge,
-  useNodesState,
-  useEdgesState,
-  OnNodesChange,
-  OnEdgesChange,
-  Node
+  ReactFlowProvider, Background, Controls, addEdge, Connection, Edge, Node,
+  useNodesState, useEdgesState, OnNodesChange, OnEdgesChange,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { VopFlow, VopFlowNode, VopFlowEdge } from '../interfaces/VopFlowTypes';
 import demoVopFlow from '../interfaces/DemoVopFlow.json';
-import { IVopHost } from '../interfaces/IVopHost';
+import { IVopHost, LogMessageType } from '../interfaces/IVopHost';
 
 interface VopFlowEditorProps {
   showDemoVopFlow?: boolean;
@@ -25,11 +16,11 @@ interface VopFlowEditorProps {
 declare global {
     interface Window {
         vopHost: IVopHost;
-        logMessage: (message: string, type?: 'error' | 'warning') => void;
+        logMessage: (message: string, type?: LogMessageType) => void;
     }
 }
 
-const messageQueue: { message: string; type?: 'error' | 'warning' }[] = [];
+const messageQueue: { message: string; type?: LogMessageType }[] = [];
 let isProcessingQueue = false;
 
 const processQueue = async () => {
@@ -43,6 +34,8 @@ const processQueue = async () => {
         console.error(message);
       } else if (type === 'warning') {
         console.warn(message);
+      } else if (type === 'code') {
+        console.log('c> '+message);
       } else {
         console.log(message);
       }
@@ -57,13 +50,11 @@ const processQueue = async () => {
           newLog.style.color = 'red';
         } else if (type === 'warning') {
           newLog.style.color = 'orange';
+        } else if (type === 'code') {
+          newLog.style.color = 'cyan';
         }
-
-        if (logDiv.firstChild) {
-          logDiv.insertBefore(newLog, logDiv.firstChild);
-        } else {
-          logDiv.appendChild(newLog);
-        }
+        logDiv.appendChild(newLog);
+        logDiv.scrollTop = logDiv.scrollHeight;
       }
     } catch (error) {
       console.error('Error processing message:', error);
@@ -72,7 +63,7 @@ const processQueue = async () => {
   isProcessingQueue = false;
 };
 
-const logMessage = async (message: string, type?: 'error' | 'warning') => {
+const logMessage = async (message: string, type?: LogMessageType) => {
   messageQueue.push({ message, type });
   await processQueue();
 };
@@ -325,7 +316,8 @@ const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, v
                 border: '1px solid #ccc',
                 fontSize: '10px',
                 marginTop: '10px',
-                wordWrap: 'break-word'
+                wordWrap: 'break-word',
+                textAlign: 'left'
               }}
             >
             </div>

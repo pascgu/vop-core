@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
-import { IVopHost } from '../interfaces/IVopHost';
+import React from 'react';
+import { IVopHost, LogMessageType } from '../interfaces/IVopHost';
+import { VopFlow } from '../interfaces/VopFlowTypes';
 import VopFlowEditor from './VopFlowEditor';
 
 const VopVscodeIntegration: React.FC = () => {
@@ -14,15 +15,14 @@ const VopVscodeIntegration: React.FC = () => {
       console.log('Received data from device:', data);
       return Promise.resolve();
     },
-    loadVopFlow: (workflowData: any) => {
-      // Implement the logic to load a workflow
-      console.log('Loading workflow:', workflowData);
-      return Promise.resolve();
+    onLoadingVopFlow: async (vopFlowJson: string) => {
+      console.log('Loading workflow:', vopFlowJson);
+      const vop_flow:VopFlow = { version: '1.0', name: 'test', nodes: [], edges: []};
+      return Promise.resolve(vop_flow);
     },
-    saveVopFlow: () => {
-      // Implement the logic to save the current workflow
-      console.log('Saving workflow');
-      return Promise.resolve();
+    onSavingVopFlow: async (vopFlow: VopFlow) => {
+      console.log('Dummy onSavingVopFlow');
+      return '';
     },
     executeVopFlow: () => {
       // Implement the logic to execute the current workflow
@@ -69,15 +69,19 @@ const VopVscodeIntegration: React.FC = () => {
       console.log('JSraw');
       return Promise.resolve();
     },
+    CSraw: async () => {
+      console.log('CSraw');
+      return Promise.resolve();
+    },
+    listSerialPorts: async () => {
+      console.log('listSerialPorts');
+      return Promise.resolve([]);
+    },
+    selectSerialPort: async (portName: string) => {
+      console.log('selectSerialPort:', portName);
+      return Promise.resolve(portName);
+    },
   };
-
-  useEffect(() => {
-    // Simulate sending code to the device
-    vopHost.sendCodeToDevice('console.log("Hello, world!");');
-
-    // Simulate receiving data from the device
-    vopHost.receiveDataFromDevice({ message: 'Device is ready' });
-  }, []);
 
   return <VopFlowEditor vopHost={vopHost} />;
 };

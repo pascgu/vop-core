@@ -21,5 +21,5 @@ export interface VopFlow {
   name: string;
   nodes: VopFlowNode[];
   edges: VopFlowEdge[];
-  metadata: VopFlowMetadata;
+  metadata?: VopFlowMetadata;
 }

@@ -1,5 +1,7 @@
 import { VopFlow } from '../interfaces/VopFlowTypes';
 
+export type LogMessageType = 'error' | 'warning' | 'code';
+
 /**
  * IVopHost Interface
  *
@@ -19,7 +21,7 @@ export interface IVopHost {
    *
    * @param data - The data received from the device.
    */
-  receiveDataFromDevice(data: any): Promise<void>;
+  receiveDataFromDevice(data: string, type: LogMessageType): Promise<void>;
 
   /**
    * Loads a VopFlow from data.
