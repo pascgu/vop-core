@@ -10,7 +10,7 @@ const VopPicoIntegration: React.FC = () => {
   const vopHost: IVopHost = {
     sendCodeToDevice: async (code: string) => {
       try {
-        await bridge.invokeMethodAsync('SendCodeToDevice', code);
+        await bridge.invokeMethodAsync('SendCodeToDeviceAsync', code);
       } catch (error) {
         await logMessage('Error sending code to device: ' + JSON.stringify(error), 'error');
       }
@@ -24,7 +24,7 @@ const VopPicoIntegration: React.FC = () => {
       }
     },
     onLoadingVopFlow: async (vopFlowJson: string) => {
-      const response = await bridge.invokeMethodAsync('OnLoadingVopFlow', vopFlowJson);
+      const response = await bridge.invokeMethodAsync('OnLoadingVopFlowAsync', vopFlowJson);
       if (typeof response === 'string') {
         if (response.startsWith('{')) {
           return JSON.parse(response) as VopFlow;
@@ -37,11 +37,11 @@ const VopPicoIntegration: React.FC = () => {
     },
     onSavingVopFlow: async (vopFlow: VopFlow) => {
       const vopFlowJson = JSON.stringify(vopFlow);
-      return await bridge.invokeMethodAsync('OnSavingVopFlow', vopFlowJson);
+      return await bridge.invokeMethodAsync('OnSavingVopFlowAsync', vopFlowJson);
     },
     executeVopFlow: async () => {
       try {
-        await bridge.invokeMethodAsync('ExecuteVopFlow');
+        await bridge.invokeMethodAsync('ExecuteVopFlowAsync');
       } catch (error) {
         await logMessage('Error executing VopFlow: ' + JSON.stringify(error), 'error');
       }
@@ -60,7 +60,7 @@ const VopPicoIntegration: React.FC = () => {
     },
     getDeviceStatus: async () => {
       try {
-        let s = await bridge.invokeMethodAsync('GetDeviceStatus');
+        let s = await bridge.invokeMethodAsync('GetDeviceStatusAsync');
         await logMessage(`Device status: ${JSON.stringify(s)}`);
       } catch (error) {
         await logMessage('Error getting device status: ' + JSON.stringify(error), 'error');
@@ -69,7 +69,7 @@ const VopPicoIntegration: React.FC = () => {
     },
     JSeval: async () => {
       try {
-        return await bridge.invokeMethodAsync('JSeval');
+        return await bridge.invokeMethodAsync('JSevalAsync');
       } catch (error) {
         await logMessage('Error in JSeval: ' + JSON.stringify(error), 'error');
         return null;
@@ -77,7 +77,7 @@ const VopPicoIntegration: React.FC = () => {
     },
     JSinvoke: async () => {
       try {
-        return await bridge.invokeMethodAsync('JSinvoke');
+        return await bridge.invokeMethodAsync('JSinvokeAsync');
       } catch (error) {
         await logMessage('Error in JSinvoke: ' + JSON.stringify(error), 'error');
         return null;
@@ -85,7 +85,7 @@ const VopPicoIntegration: React.FC = () => {
     },
     JSraw: async () => {
       try {
-        return await bridge.invokeMethodAsync('JSraw');
+        return await bridge.invokeMethodAsync('JSrawAsync');
       } catch (error) {
         await logMessage('Error in JSraw: ' + JSON.stringify(error), 'error');
         return null;
@@ -100,7 +100,7 @@ const VopPicoIntegration: React.FC = () => {
     },
     listSerialPorts: async () => {
       try {
-        return await bridge.invokeMethodAsync('ListSerialPorts');
+        return await bridge.invokeMethodAsync('ListSerialPortsAsync');
       } catch (error) {
         await logMessage('Error listing serial ports: ' + JSON.stringify(error), 'error');
         return [];
@@ -108,9 +108,8 @@ const VopPicoIntegration: React.FC = () => {
     },
     selectSerialPort: async (portName: string) => {
       try {
-        const selectedPort = await bridge.invokeMethodAsync('SelectSerialPort', portName);
+        const selectedPort = await bridge.invokeMethodAsync('SelectSerialPortAsync', portName);
         const port = selectedPort.split(' (')[0];
-        await logMessage('Serial port: ' + JSON.stringify(port));
         return port;
       } catch (error) {
         await logMessage('Error selecting serial port: ' + JSON.stringify(error), 'error');
