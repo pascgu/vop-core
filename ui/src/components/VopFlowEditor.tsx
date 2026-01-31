@@ -186,6 +186,14 @@ const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, v
         return { portName, details: details ? details.slice(0, -1) : '' };
       }));
       console.log('Available serial ports:', ports);
+
+      // Auto-connect if only one device is found
+      if (ports.length === 1) {
+        const portName = ports[0].split(' (')[0];
+        console.log(`Only one device found, auto-connecting to: ${portName}`);
+        await logMessage(`Auto-connecting to single device: ${portName}`);
+        await selectSerialPort(portName);
+      }
     } catch (error) {
       console.error('Error listing serial ports:', error);
     }
