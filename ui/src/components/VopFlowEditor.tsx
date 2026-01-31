@@ -313,6 +313,14 @@ const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, v
             >
               Send Test Message
             </button>
+            <button
+              onClick={async () => {
+                await vopHost.quitApplication();
+              }}
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2"
+            >
+              Quit Application
+            </button>
             <div
               id="logDiv"
               ref={logRef}

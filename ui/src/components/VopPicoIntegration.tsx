@@ -116,6 +116,14 @@ const VopPicoIntegration: React.FC = () => {
         return null;
       }
     },
+    quitApplication: async () => {
+      try {
+        return await bridge.invokeMethodAsync('QuitApplicationAsync');
+      } catch (error) {
+        await logMessage('Error quitting application: ' + JSON.stringify(error), 'error');
+        return null;
+      }
+    },
   };
 
   return <VopFlowEditor vopHost={vopHost} />;

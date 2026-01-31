@@ -61,35 +61,40 @@ export interface IVopHost {
    */
   onVopFlowExecutionError(error: any): Promise<void>;
 
-  /**
-   * Sends a raw message to the device.
-   *
-   * @param message - The raw message to send.
-   */
-  onRawMessageReceived(message: string): Promise<void>;
+    /**
+     * Sends a raw message to the device.
+     *
+     * @param message - The raw message to send.
+     */
+    onRawMessageReceived(message: string): Promise<void>;
 
-  /**
-   * Gets the device status.
-   */
-  getDeviceStatus(): Promise<any>;
+    /**
+     * Gets the device status.
+     */
+    getDeviceStatus(): Promise<any>;
 
-  /**
-   * Test the CS<=>JS bridge.
-   */
-  JSeval(): Promise<void>;
-  JSinvoke(): Promise<void>;
-  JSraw(): Promise<void>;
-  CSraw(): void;
+    /**
+     * Test the CS<=>JS bridge.
+     */
+    JSeval(): Promise<void>;
+    JSinvoke(): Promise<void>;
+    JSraw(): Promise<void>;
+    CSraw(): void;
 
-  /**
-   * Lists available serial ports.
-   */
-  listSerialPorts(): Promise<string[]>;
+    /**
+     * Lists available serial ports.
+     */
+    listSerialPorts(): Promise<string[]>;
 
-  /**
-   * Selects a serial port.
-   *
-   * @param portName - The name of the serial port to select.
-   */
-  selectSerialPort(portName: string): Promise<string>;
+    /**
+     * Selects a serial port.
+     *
+     * @param portName - The name of the serial port to select.
+     */
+    selectSerialPort(portName: string): Promise<string>;
+
+    /**
+     * Quits the application.
+     */
+    quitApplication(): Promise<void>;
 }
