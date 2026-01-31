@@ -292,7 +292,7 @@ const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, v
                 </div>
               </div>
             </div>
-            <div style={{ marginTop: '10px' }}>
+            <div>
               <button onClick={listSerialPorts}>
                 List Serial Ports
               </button>
@@ -314,11 +314,11 @@ const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, v
               Send Test Message
             </button>
             <button
+              style={{marginTop: '5px', color: 'blue'}}
               onClick={async () => {
                 await vopHost.quitApplication();
               }}
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2"
-            >
+             >
               Quit Application
             </button>
             <div
