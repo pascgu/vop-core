@@ -72,7 +72,7 @@ const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, v
   const [nodes, setNodes, onNodesChange] = useNodesState<VopFlowNode>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<VopFlowEdge>([]);
   const [vopFlow, setVopFlow] = useState<VopFlow>({
-    version: '1.0',
+    version: '1.1',
     name: '',
     nodes: [],
     edges: [],
@@ -213,20 +213,14 @@ const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, v
     (params: Edge | Connection) => {
       setEdges((eds) => {
         const updatedEdges = addEdge(params, eds);
-        return updatedEdges.map(edge => ({
-          ...edge,
-          metadata: (edge as VopFlowEdge).metadata || {}
-        })) as VopFlowEdge[];
+        return updatedEdges as VopFlowEdge[];
       });
 
       setVopFlow((prevVopFlow: VopFlow) => {
         const updatedEdges = addEdge(params, prevVopFlow.edges);
         return {
           ...prevVopFlow,
-          edges: updatedEdges.map(edge => ({
-            ...edge,
-            metadata: (edge as VopFlowEdge).metadata || {}
-          })) as VopFlowEdge[]
+          edges: updatedEdges as VopFlowEdge[]
         };
       });
     },

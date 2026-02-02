@@ -10,7 +10,7 @@
     "type": {
       "type": "string",
       "description": "Type of data being exchanged",
-      "enum": ["code", "data"]
+      "enum": ["code", "data", "vopflow"]
     },
     "content": {
       "type": "object",
@@ -23,9 +23,13 @@
         "data": {
           "type": "object",
           "description": "Data received from the device"
+        },
+        "vopflow": {
+          "type": "object",
+          "description": "VopFlow structure",
+          "$ref": "VopFlowSchema.json"
         }
-      },
-      "required": ["code", "data"]
+      }
     }
   },
   "required": ["id", "type", "content"]

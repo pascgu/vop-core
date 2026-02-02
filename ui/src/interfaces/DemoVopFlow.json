@@ -1,36 +1,47 @@
 {
-  "version": "1.0",
+  "version": "1.1",
   "name": "Demo VopFlow",
+  "metadata": {
+    "author": "Demo",
+    "createdAt": "2023-10-01T00:00:00Z",
+    "updatedAt": "2026-02-01T20:00:00Z"
+  },
   "nodes": [
     {
-      "id": "node-1",
-      "type": "input",
-      "position": { "x": 250, "y": 5 },
-      "data": { "label": "Node 1" },
-      "properties": {}
+      "id": "start",
+      "type": "start",
+      "position": { "x": 200, "y": 85 },
+      "data": {
+        "properties": {
+          "label": "Start"
+        }
+      }
     },
     {
-      "id": "node-2",
-      "type": "output",
-      "position": { "x": 100, "y": 100 },
-      "data": { "label": "Node 2" },
-      "properties": {}
+      "id": "print_hello",
+      "type": "function_call",
+      "position": { "x": 400, "y": 85 },
+      "data": {
+        "prototype": "builtins.print",
+        "inputs": [
+          { "id": "message", "type": "str", "value": "hello" }
+        ],
+        "properties": {
+          "label": "Print Hello"
+        }
+      }
     }
   ],
   "edges": [
     {
-      "id": "edge-1",
-      "source": "node-1",
-      "target": "node-2",
+      "id": "start-to-print",
+      "source": "start",
+      "target": "print_hello",
+      "type": "flow",
       "animated": false,
-      "type": "step",
-      "label": "connects with",
-      "metadata": {}
+      "data": {
+        "label": ""
+      }
     }
-  ],
-  "metadata": {
-    "author": "Demo",
-    "createdAt": "2023-10-01T00:00:00Z",
-    "updatedAt": "2023-10-01T00:00:00Z"
-  }
+  ]
 }
