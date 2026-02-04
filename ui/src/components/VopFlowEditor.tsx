@@ -86,6 +86,8 @@ const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, v
   const [serialPorts, setSerialPorts] = useState<{ portName: string; details: string }[]>([]);
   const [selectedPort, setSelectedPort] = useState<string | null>(null);
 
+  const [inputCodeValue, setInputCodeValue] = useState("print('from VoP '+str(1*2)+' Pico')");
+
   useEffect(() => {
     // init component
     console.log('init component VopFlowEditor');
@@ -233,15 +235,6 @@ const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, v
     [setEdges]
   );
 
-  const sendTestMessageToPico = async () => {
-    try {
-      await window.vopHost.sendCodeToDevice("print('from VoP '+str(1*2)+' Pico')");
-    } catch (error) {
-      console.error("Error sending test message to Pico:", error);
-      await logMessage(`Error sending test message to Pico: ${JSON.stringify(error)}`);
-    }
-  };
-
   return (
     <div style={{ width: '100%', height: '100vh' }}>
       <ReactFlowProvider>
@@ -307,11 +300,17 @@ const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, v
                 ))}
               </select>
             )}
+            <input
+              type="text"
+              value={inputCodeValue}
+              onChange={(e) => setInputCodeValue(e.target.value)}
+              placeholder="Write code here..."
+            />
             <button
-              onClick={sendTestMessageToPico}
+              onClick={async () => await vopHost.sendCodeToDevice(inputCodeValue)}
               className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2"
             >
-              Send Test Message
+              Send Code to Pico
             </button>
             <button
               style={{marginTop: '5px', color: 'blue'}}
