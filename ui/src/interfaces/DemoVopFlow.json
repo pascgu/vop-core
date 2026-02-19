@@ -1,36 +1,46 @@
 {
-  "version": "1.0",
+  "version": "1.2",
   "name": "Demo VopFlow",
+  "metadata": {
+    "author": "Demo",
+    "createdAt": "2023-10-01T00:00:00Z",
+    "updatedAt": "2026-02-15T00:00:00Z"
+  },
   "nodes": [
     {
-      "id": "node-1",
-      "type": "input",
-      "position": { "x": 250, "y": 5 },
-      "data": { "label": "Node 1" },
-      "properties": {}
+      "id": "start",
+      "type": "start",
+      "position": { "x": 100, "y": 50 },
+      "data": {
+        "label": "Start"
+      }
     },
     {
-      "id": "node-2",
-      "type": "output",
-      "position": { "x": 100, "y": 100 },
-      "data": { "label": "Node 2" },
-      "properties": {}
+      "id": "print1",
+      "type": "function-call",
+      "position": { "x": 100, "y": 150 },
+      "data": {
+        "label": "print",
+        "target": "micropython",
+        "function": "print",
+        "inputs": {
+          "message": { "default": "Hello World" }
+        }
+      }
     }
   ],
   "edges": [
     {
       "id": "edge-1",
-      "source": "node-1",
-      "target": "node-2",
+      "source": "start",
+      "target": "print1",
+      "sourceHandle": "control-out",
+      "targetHandle": "control-in",
       "animated": false,
-      "type": "step",
-      "label": "connects with",
-      "metadata": {}
+      "label": "",
+      "metadata": {
+        "flowType": "control-flow"
+      }
     }
-  ],
-  "metadata": {
-    "author": "Demo",
-    "createdAt": "2023-10-01T00:00:00Z",
-    "updatedAt": "2023-10-01T00:00:00Z"
-  }
+  ]
 }

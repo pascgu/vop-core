@@ -4,7 +4,7 @@ import ReactFlow, {
   useNodesState, useEdgesState, OnNodesChange, OnEdgesChange,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { VopFlow, VopFlowNode, VopFlowEdge } from '../interfaces/VopFlowTypes';
+import { VopFlow, VopFlowNodeData, VopFlowEdge } from '../interfaces/VopFlowTypes';
 import demoVopFlow from '../interfaces/DemoVopFlow.json';
 import { IVopHost, LogMessageType } from '../interfaces/IVopHost';
 
@@ -69,8 +69,8 @@ const logMessage = async (message: string, type?: LogMessageType) => {
 };
 
 const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, vopHost }) => {
-  const [nodes, setNodes, onNodesChange] = useNodesState<VopFlowNode>([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState<VopFlowEdge>([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<VopFlowNodeData>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [vopFlow, setVopFlow] = useState<VopFlow>({
     version: '1.0',
     name: '',
@@ -111,8 +111,8 @@ const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, v
     window.addEventListener("HybridWebViewMessageReceived", onHybridWebViewMessageReceived);
 
     if (showDemoVopFlow) {
-      setNodes(demoVopFlow.nodes as unknown as VopFlowNode[]);
-      setEdges(demoVopFlow.edges as unknown as VopFlowEdge[]);
+      setNodes(demoVopFlow.nodes);
+      setEdges(demoVopFlow.edges);
       setVopFlow(demoVopFlow as unknown as VopFlow);
     }
 
@@ -127,7 +127,7 @@ const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, v
     const vopFlowData: VopFlow = {
       version: vopFlow.version,
       name: vopFlow.name,
-      nodes: nodes as VopFlowNode[],
+      nodes: nodes,
       edges: edges as VopFlowEdge[],
       metadata: vopFlow.metadata
     };
@@ -166,8 +166,8 @@ const VopFlowEditor: React.FC<VopFlowEditorProps> = ({ showDemoVopFlow = true, v
           const vopFlowJson = e.target?.result as string;
           try {
             const vopFlowData = await vopHost.onLoadingVopFlow(vopFlowJson);
-            setNodes(vopFlowData.nodes as unknown as VopFlowNode[]);
-            setEdges(vopFlowData.edges as unknown as VopFlowEdge[]);
+            setNodes(vopFlowData.nodes);
+            setEdges(vopFlowData.edges);
             setVopFlow(vopFlowData);
             await logMessage('VopFlow loaded successfully.');
           } catch (error) {

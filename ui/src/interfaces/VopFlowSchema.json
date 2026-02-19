@@ -1,18 +1,40 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "VopFlowSchema",
+  "description": "JSON Schema for VopFlow v1.2 format",
   "type": "object",
   "properties": {
     "version": {
       "type": "string",
-      "description": "Version of the VopFlow schema"
+      "description": "Version of the VopFlow format (currently 1.2)"
     },
     "name": {
       "type": "string",
-      "description": "Name of the VopFlow"
+      "description": "Name of the VopFlow workflow"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "VopFlow metadata",
+      "properties": {
+        "author": {
+          "type": "string",
+          "description": "Author of the VopFlow"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp (ISO 8601)"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp (ISO 8601)"
+        }
+      }
     },
     "nodes": {
       "type": "array",
+      "description": "Array of workflow nodes",
       "items": {
         "type": "object",
         "properties": {
@@ -22,33 +44,117 @@
           },
           "type": {
             "type": "string",
-            "description": "Type of the node",
-            "enum": ["input", "output", "processing"]
+            "description": "Type of the node (start, import, function-call, method-call, loop, condition, variable, literal, or custom)"
           },
           "position": {
             "type": "object",
+            "description": "Position of the node in the editor",
             "properties": {
               "x": {
                 "type": "number",
-                "description": "X-coordinate of the node"
+                "description": "X-coordinate"
               },
               "y": {
                 "type": "number",
-                "description": "Y-coordinate of the node"
+                "description": "Y-coordinate"
               }
             },
             "required": ["x", "y"]
           },
-          "properties": {
+          "data": {
             "type": "object",
-            "description": "Node-specific properties"
+            "description": "Node data (label, target, and type-specific fields)",
+            "properties": {
+              "label": {
+                "type": "string",
+                "description": "Label displayed in the UI"
+              },
+              "target": {
+                "type": "string",
+                "description": "Target language (micropython, python, arduino, etc.)"
+              },
+              "module": {
+                "type": "string",
+                "description": "Module to import (for import nodes)"
+              },
+              "alias": {
+                "type": "string",
+                "description": "Import alias (for import nodes)"
+              },
+              "function": {
+                "type": "string",
+                "description": "Function name (for function-call nodes)"
+              },
+              "method": {
+                "type": "string",
+                "description": "Method name (for method-call nodes)"
+              },
+              "object": {
+                "type": "string",
+                "description": "Object name (for method-call nodes)"
+              },
+              "loopType": {
+                "type": "string",
+                "enum": ["for", "while"],
+                "description": "Loop type (for loop nodes)"
+              },
+              "iterator": {
+                "type": "string",
+                "description": "Iterator variable name (for for loops)"
+              },
+              "condition": {
+                "type": "string",
+                "description": "Condition expression (for loops and conditions)"
+              },
+              "name": {
+                "type": "string",
+                "description": "Variable name (for variable nodes)"
+              },
+              "value": {
+                "description": "Variable value (for variable nodes)"
+              },
+              "valueType": {
+                "type": "string",
+                "enum": ["integer", "float", "string", "boolean", "list"],
+                "description": "Value type for literal nodes (v1.2)"
+              },
+              "inputs": {
+                "type": "object",
+                "description": "Named input ports with optional default values (v1.2)",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "default": {
+                      "description": "Default value when no data-flow edge is connected"
+                    }
+                  }
+                }
+              },
+              "output": {
+                "type": "object",
+                "description": "Output variable binding (v1.2)",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Variable name for the node's output value"
+                  }
+                },
+                "required": ["name"]
+              },
+              "namespace": {
+                "type": "string",
+                "description": "Namespace for sub-flow organization (future use)"
+              }
+            },
+            "required": ["label"]
           }
         },
-        "required": ["id", "type", "position"]
+        "required": ["id", "type", "position", "data"]
       }
     },
     "edges": {
       "type": "array",
+      "description": "Array of connections between nodes",
       "items": {
         "type": "object",
         "properties": {
@@ -64,34 +170,37 @@
             "type": "string",
             "description": "ID of the target node"
           },
+          "sourceHandle": {
+            "type": "string",
+            "description": "Source handle ID (control-out, data-out, loop-back, condition-true, condition-false)"
+          },
+          "targetHandle": {
+            "type": "string",
+            "description": "Target handle ID (control-in, data-in, data-in:<portName> for named inputs, loop-back)"
+          },
+          "animated": {
+            "type": "boolean",
+            "description": "Whether the edge is animated in the UI"
+          },
+          "label": {
+            "type": "string",
+            "description": "Label displayed on the edge"
+          },
           "metadata": {
             "type": "object",
-            "description": "Edge-specific metadata"
+            "description": "Edge metadata",
+            "properties": {
+              "flowType": {
+                "type": "string",
+                "enum": ["control-flow", "data-flow"],
+                "description": "Type of flow (control-flow or data-flow)"
+              }
+            }
           }
         },
         "required": ["id", "source", "target"]
       }
-    },
-    "metadata": {
-      "type": "object",
-      "description": "VopFlow metadata",
-      "properties": {
-        "author": {
-          "type": "string",
-          "description": "Author of the VopFlow"
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time",
-          "description": "Creation timestamp of the VopFlow"
-        },
-        "updatedAt": {
-          "type": "string",
-          "format": "date-time",
-          "description": "Last update timestamp of the VopFlow"
-        }
-      }
     }
   },
-  "required": ["version", "name", "nodes", "edges", "metadata"]
+  "required": ["version", "name", "nodes", "edges"]
 }
